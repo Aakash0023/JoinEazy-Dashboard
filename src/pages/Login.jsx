@@ -1,117 +1,145 @@
 import { useState } from "react";
-import { users } from "../data/mockData";
-import { setCurrentUser } from "../utils/storage";
+import { useApp } from "../context/AppContext";
 
 function Login() {
+  const { login, students, admins } = useApp();
   const [role, setRole] = useState("student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const directory = role === "student" ? students : admins;
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setError("");
 
-    const user = users.find(
-      (user) => user.email === email && user.role === role
+    const user = directory.find(
+      (u) => u.email.toLowerCase() === email.trim().toLowerCase()
     );
 
     if (!user) {
-      alert("Invalid email or role");
+      setError("No record matches that email for this role — try a card below.");
       return;
     }
 
-    setCurrentUser(user);
-    window.location.href = user.role === "admin" ? "/admin" : "/student";
+    // No real backend, so any non-empty password is accepted for this demo.
+    login(user);
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white">Joineazy</h1>
-          <p className="mt-2 text-slate-400">Assignment Management Dashboard</p>
+    <div className="min-h-screen bg-ledger px-4 py-12 sm:px-8 lg:px-16">
+      <div className="mx-auto grid max-w-5xl gap-14 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+        {/* Left: identity */}
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-sage">Assignment Ledger</p>
+          <h1 className="mt-4 font-display text-5xl italic leading-[1.05] text-parchment sm:text-6xl">
+            Every submission,
+            <br />
+            on the record.
+          </h1>
+          <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-sage">
+            Students confirm what they've turned in. Professors see exactly who
+            hasn't — no spreadsheets, no guesswork.
+          </p>
+
+          <div className="mt-10 flex items-center gap-4">
+            <span className="stamp w-14 h-14">Submitted</span>
+            <span className="stamp stamp-pending w-14 h-14">Open</span>
+            <p className="text-xs text-sage">
+              Two stamps.
+              <br />
+              That's the whole system.
+            </p>
+          </div>
         </div>
 
-        <form
-          onSubmit={handleLogin}
-          className="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl"
-        >
-          <h2 className="text-2xl font-semibold text-white">Welcome back</h2>
+        {/* Right: the sign-in card */}
+        <div className="relative rounded-sm border border-ledger-line bg-ledger-surface p-7 shadow-[0_1px_0_rgba(0,0,0,0.4)] sm:p-9">
+          <span
+            className="absolute left-6 top-6 h-3 w-3 rounded-full bg-ledger"
+            style={{ boxShadow: "inset 0 1px 2px rgba(0,0,0,0.6)" }}
+            aria-hidden="true"
+          />
 
-          <p className="mt-2 text-sm text-slate-400">
-            Sign in to continue to your dashboard
-          </p>
+          <div className="pl-6">
+            <h2 className="font-display text-2xl italic text-parchment">Sign in</h2>
 
-          <div className="mt-6">
-            <label className="mb-2 block text-sm font-medium text-slate-300">
-              Login as
-            </label>
+            <div className="mt-6 flex border-b border-ledger-line text-sm">
+              {["student", "admin"].map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => {
+                    setRole(r);
+                    setEmail("");
+                    setError("");
+                  }}
+                  className={`relative -mb-px px-1 pb-3 pr-6 capitalize transition ${
+                    role === r ? "text-parchment" : "text-sage hover:text-parchment"
+                  }`}
+                >
+                  {r === "admin" ? "Faculty" : "Student"}
+                  {role === r && (
+                    <span className="absolute inset-x-0 bottom-0 h-[2px] bg-brass" />
+                  )}
+                </button>
+              ))}
+            </div>
 
-            <div className="grid grid-cols-2 gap-2 rounded-lg bg-slate-800 p-1">
+            <form onSubmit={handleLogin} className="mt-6 space-y-5">
+              <div>
+                <label className="block text-xs uppercase tracking-wide text-sage">Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="field-line mt-1 w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-wide text-sage">Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Anything works in this demo"
+                  className="field-line mt-1 w-full"
+                />
+              </div>
+
+              {error && <p className="text-sm text-stamp">{error}</p>}
+
               <button
-                type="button"
-                onClick={() => setRole("student")}
-                className={`rounded-md px-4 py-2 text-sm font-medium transition ${
-                  role === "student"
-                    ? "bg-white text-slate-900"
-                    : "text-slate-400 hover:text-white"
-                }`}
+                type="submit"
+                className="w-full bg-brass py-2.5 text-sm font-medium text-ledger transition hover:bg-brass-dim"
               >
-                Student
+                Sign in
               </button>
+            </form>
 
-              <button
-                type="button"
-                onClick={() => setRole("admin")}
-                className={`rounded-md px-4 py-2 text-sm font-medium transition ${
-                  role === "admin"
-                    ? "bg-white text-slate-900"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                Admin
-              </button>
+            <div className="mt-8 border-t border-ledger-line pt-6">
+              <p className="mb-3 text-xs uppercase tracking-wide text-sage">
+                Quick demo — {role === "admin" ? "faculty" : "students"}
+              </p>
+              <div className="space-y-2">
+                {directory.map((user) => (
+                  <button
+                    key={user.id}
+                    type="button"
+                    onClick={() => login(user)}
+                    className="flex w-full items-center justify-between border-b border-dashed border-ledger-line py-2 text-left transition hover:border-brass"
+                  >
+                    <span className="text-sm text-parchment">{user.name}</span>
+                    <span className="font-mono text-xs text-sage">{user.email}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-
-          <div className="mt-5">
-            <label className="mb-2 block text-sm font-medium text-slate-300">
-              Email
-            </label>
-
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-slate-500"
-            />
-          </div>
-
-          <div className="mt-5">
-            <label className="mb-2 block text-sm font-medium text-slate-300">
-              Password
-            </label>
-
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-slate-500"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="mt-6 w-full rounded-lg bg-white py-3 font-semibold text-slate-900 transition hover:bg-slate-200"
-          >
-            Sign In
-          </button>
-
-          <p className="mt-5 text-center text-xs text-slate-500">
-            Demo login · {role === "student" ? "Student" : "Admin"} account
-          </p>
-        </form>
+        </div>
       </div>
     </div>
   );

@@ -1,45 +1,27 @@
-function ProgressBar({
-  value = 0,
-  label,
-  showPercent = true,
-  size = "md",
-  colorClass,
-}) {
+/**
+ * A tally gauge, styled like a ruled ledger line rather than a rounded
+ * SaaS pill: square ends, a hairline track, and a brass fill.
+ */
+function ProgressBar({ value = 0, label, showPercent = true, size = "md" }) {
   const clamped = Math.max(0, Math.min(100, value));
-
-  const autoColor =
-    clamped === 100
-      ? "bg-emerald-500"
-      : clamped >= 50
-      ? "bg-amber-400"
-      : clamped > 0
-      ? "bg-orange-500"
-      : "bg-slate-600";
-
-  const heights = {
-    sm: "h-1.5",
-    md: "h-3",
-    lg: "h-4",
-  };
+  const heights = { sm: "h-1.5", md: "h-2.5" };
 
   return (
     <div className="w-full">
       {(label || showPercent) && (
-        <div className="mb-1.5 flex items-center justify-between text-sm">
-          {label && <span className="text-slate-400">{label}</span>}
+        <div className="mb-2 flex items-baseline justify-between gap-3">
+          {label && <span className="text-sm text-sage">{label}</span>}
           {showPercent && (
-            <span className="font-semibold text-white">{clamped}%</span>
+            <span className="font-mono text-sm font-medium text-parchment">
+              {clamped}%
+            </span>
           )}
         </div>
       )}
 
-      <div
-        className={`w-full overflow-hidden rounded-full bg-slate-800 ${heights[size]}`}
-      >
+      <div className={`w-full overflow-hidden bg-ledger-raised ${heights[size]}`}>
         <div
-          className={`h-full rounded-full transition-all duration-500 ${
-            colorClass || autoColor
-          }`}
+          className="h-full bg-brass transition-all duration-500 ease-out"
           style={{ width: `${clamped}%` }}
         />
       </div>

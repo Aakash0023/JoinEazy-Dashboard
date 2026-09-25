@@ -1,8 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import {
-  users as seedUsers,
-  assignments as seedAssignments,
-} from "../data/mockData";
+import { users as seedUsers, assignments as seedAssignments } from "../data/mockData";
 
 const STORAGE_KEYS = {
   currentUser: "je_current_user",
@@ -29,16 +26,14 @@ export function AppProvider({ children }) {
     loadJSON(STORAGE_KEYS.assignments, seedAssignments)
   );
 
+  // Persist to localStorage whenever data changes — this is our "mock backend".
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.assignments, JSON.stringify(assignments));
   }, [assignments]);
 
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem(
-        STORAGE_KEYS.currentUser,
-        JSON.stringify(currentUser)
-      );
+      localStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(currentUser));
     } else {
       localStorage.removeItem(STORAGE_KEYS.currentUser);
     }
@@ -68,10 +63,7 @@ export function AppProvider({ children }) {
         assignment.id === assignmentId
           ? {
               ...assignment,
-              submissions: {
-                ...assignment.submissions,
-                [studentId]: submitted,
-              },
+              submissions: { ...assignment.submissions, [studentId]: submitted },
             }
           : assignment
       )
@@ -83,11 +75,7 @@ export function AppProvider({ children }) {
     localStorage.removeItem(STORAGE_KEYS.assignments);
   };
 
-  const students = useMemo(
-    () => seedUsers.filter((u) => u.role === "student"),
-    []
-  );
-
+  const students = useMemo(() => seedUsers.filter((u) => u.role === "student"), []);
   const admins = useMemo(() => seedUsers.filter((u) => u.role === "admin"), []);
 
   const value = {
@@ -106,12 +94,11 @@ export function AppProvider({ children }) {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useApp() {
   const ctx = useContext(AppContext);
-
   if (!ctx) {
     throw new Error("useApp must be used inside an <AppProvider>");
   }
-
   return ctx;
 }

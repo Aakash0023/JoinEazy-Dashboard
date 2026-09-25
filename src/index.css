@@ -1,1 +1,127 @@
 @import "tailwindcss";
+
+@theme {
+  --color-ledger: #16231c;
+  --color-ledger-surface: #1f2f27;
+  --color-ledger-raised: #29392f;
+  --color-ledger-line: #37493d;
+
+  --color-parchment: #f2ede1;
+  --color-parchment-dim: #c9c3b4;
+  --color-sage: #9fb0a3;
+
+  --color-brass: #d8a94e;
+  --color-brass-dim: #b98f44;
+
+  --color-stamp: #c1523d;
+  --color-moss: #7fb088;
+
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    background-color: var(--color-ledger);
+    color: var(--color-parchment);
+  }
+
+  ::selection {
+    background-color: var(--color-brass);
+    color: var(--color-ledger);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brass);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* Ruled-paper underline input, used instead of boxed form fields */
+  .field-line {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-ledger-line);
+    border-radius: 0;
+    padding: 0.5rem 0.125rem;
+    color: var(--color-parchment);
+    transition: border-color 150ms ease;
+  }
+
+  .field-line::placeholder {
+    color: var(--color-sage);
+    opacity: 0.7;
+  }
+
+  .field-line:focus {
+    outline: none;
+    border-bottom-color: var(--color-brass);
+  }
+
+  /* Ink stamp used for "Submitted" status */
+  .stamp {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 2px solid var(--color-moss);
+    color: var(--color-moss);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.6rem;
+    letter-spacing: 0.02em;
+    text-align: center;
+    line-height: 1.05;
+    transform: rotate(-8deg);
+    box-shadow: inset 0 0 0 2px rgba(127, 176, 136, 0.15);
+  }
+
+  .stamp::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 9999px;
+    border: 1px solid var(--color-moss);
+    opacity: 0.5;
+  }
+
+  .stamp-pending {
+    border-color: var(--color-parchment-dim);
+    color: var(--color-parchment-dim);
+    border-style: dashed;
+    transform: rotate(0deg);
+    box-shadow: none;
+  }
+
+  .stamp-pending::before {
+    display: none;
+  }
+
+  @keyframes stamp-drop {
+    0% {
+      transform: translateY(-140%) rotate(-18deg) scale(1.3);
+      opacity: 0;
+    }
+    60% {
+      transform: translateY(6%) rotate(-8deg) scale(1);
+      opacity: 1;
+    }
+    80% {
+      transform: translateY(-2%) rotate(-8deg) scale(1);
+    }
+    100% {
+      transform: translateY(0) rotate(-8deg) scale(1);
+    }
+  }
+
+  .stamp-animate {
+    animation: stamp-drop 480ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+  }
+}
