@@ -1,237 +1,121 @@
-# JoinEazy — Student Assignment Dashboard
+# JoinEazy Assignment Dashboard
 
-A role-based dashboard for managing student assignments, styled as an
-**assignment ledger**: submissions get stamped, not just checked off.
-Built with **React + Vite + Tailwind CSS**, with no backend — all data is
-mocked and persisted in `localStorage`.
+A responsive assignment management dashboard built for students and faculty to manage assignments, track submissions, and monitor academic progress.
 
-**Live demo:** _add your Netlify/Vercel URL here after deploying_
+## Overview
 
----
+JoinEazy provides separate workspaces for students and faculty.
 
-## ✨ Features
+Students can:
 
-### Student role
-- View a personal list of assignments (title, description, due date, Drive link).
-- **Double-verification submission flow**: "I have submitted" → confirmation
-  modal → "Yes, Confirm Submission", so a status can't be flipped by accident.
-- Personal stats (total / submitted / pending) and an overall completion
-  progress bar.
-- Only ever sees their **own** submission status — never another student's.
+- View their assignments
+- Check due dates and submission links
+- Track overall completion
+- Confirm assignment submissions through a two-step verification flow
+- View their submission status
 
-### Admin (professor) role
-- **Create assignments** with a title, description, due date, and an
-  external Drive link, via a modal form.
-- Only sees the assignments **they personally created** (filtered by
-  `createdBy`), never another admin's.
-- Per-assignment breakdown: an aggregate progress bar (e.g. "3 of 4 students
-  submitted") plus a per-student list, each with a status badge and an
-  individual progress indicator.
-- Top-level stats: assignments created, total students, submissions
-  received, and overall submission rate.
+Faculty can:
 
-### Shared
-- Role-based login (with one-click demo accounts — see below).
-- Fully responsive: a collapsible drawer sidebar on mobile, fixed sidebar on
-  desktop, and a stacked layout on small screens.
-- Data survives page refresh via `localStorage` (acts as a mock database).
+- Create assignments
+- Add descriptions, due dates, and Google Drive links
+- View student submission progress
+- Track individual student submission status
+- Monitor overall assignment completion
 
----
+The application uses mock data and browser localStorage instead of a backend.
 
-## 🧰 Tech stack
+## Features
 
-- **React 19** (function components + hooks only: `useState`, `useEffect`,
-  `useMemo`, `useContext`)
-- **Context API** for global auth + assignment state (`AppContext`)
-- **Vite** for tooling/dev server
-- **Tailwind CSS v4** for styling
-- No routing library — the app is a single view that swaps between
-  Login / Student Dashboard / Admin Dashboard based on the logged-in user,
-  which keeps the mock-data model simple.
+### Student Dashboard
 
----
+- Assignment overview
+- Submission statistics
+- Overall progress tracking
+- Assignment status indicators
+- Google Drive submission links
+- Double-confirmation before marking an assignment as submitted
+- Persistent submission state using localStorage
+- Responsive mobile navigation
 
-## 🚀 Getting started
+### Faculty Dashboard
 
-```bash
-# 1. Clone the repo
-git clone https://github.com/Aakash0023/JoinEazy-Dashboard.git
-cd JoinEazy-Dashboard
+- Assignment statistics
+- Create assignment workflow
+- Assignment-level submission progress
+- Individual student submission status
+- Student progress indicators
+- Expandable student lists
+- Google Drive links
+- Responsive dashboard layout
 
-# 2. Install dependencies
-npm install
+### UI & Interaction
 
-# 3. Run the dev server
-npm run dev
-```
+- Dark dashboard interface
+- Warm yellow accent system
+- Responsive layout
+- Animated navigation interactions
+- Smooth section navigation
+- Active sidebar tracking
+- Hover states and micro-interactions
+- Responsive modal dialogs
+- Mobile sidebar drawer
 
-Then open the printed local URL (usually `http://localhost:5173`).
+## Tech Stack
 
-### Other scripts
+- React.js
+- Vite
+- JavaScript
+- Tailwind CSS
+- HTML5
+- CSS3
+- LocalStorage
+- Mock data
 
-```bash
-npm run build     # production build into /dist
-npm run preview   # preview the production build locally
-npm run lint      # run ESLint
-```
+## Architecture
 
-### Demo accounts
+The application follows a component-based React architecture.
 
-No backend means no real authentication — pick a role on the login screen
-and either click one of the **quick demo login** cards, or type one of these
-emails with any password:
+Application-level state is managed using React Context API through `AppContext`.
 
-| Role    | Name             | Email                  |
-| ------- | ---------------- | ----------------------- |
-| Student | Aakash Kumar     | aakash@student.com     |
-| Student | Priya Sharma     | priya@student.com      |
-| Student | Rohan Verma      | rohan@student.com      |
-| Student | Meera Iyer       | meera@student.com      |
-| Admin   | Prof. Sarah Chen | sarah@joineazy.com     |
-| Admin   | Prof. Arjun Nair | arjun@joineazy.com     |
+The context handles:
 
-There are two admin accounts on purpose — logging in as each shows a
-different, correctly-filtered set of assignments, which demonstrates the
-"see only your own data" requirement for admins too.
+- Current authenticated user
+- Assignment data
+- Student data
+- Faculty data
+- Assignment creation
+- Submission status updates
+- LocalStorage persistence
 
-To reset the demo data back to its seeded state, clear your browser's
-localStorage for the site (DevTools → Application → Local Storage) and
-refresh.
+The UI is divided into reusable components for navigation, layouts, assignments, progress indicators, and modal workflows.
 
----
+## Folder Structure
 
-## 📁 Folder structure
-
-```
+```text
 src/
 ├── components/
 │   ├── admin/
-│   │   ├── AssignmentAdminCard.jsx   # per-assignment student breakdown
-│   │   └── CreateAssignmentModal.jsx # "New Assignment" form
+│   │   ├── AssignmentAdminCard.jsx
+│   │   └── CreateAssignmentModal.jsx
 │   ├── layout/
-│   │   └── DashboardLayout.jsx       # navbar + sidebar shell, shared by both roles
-│   ├── AssignmentCard.jsx            # student-facing assignment card + confirm flow
+│   │   └── DashboardLayout.jsx
+│   ├── AssignmentCard.jsx
 │   ├── Navbar.jsx
+│   ├── ProgressBar.jsx
 │   ├── Sidebar.jsx
-│   ├── ProgressBar.jsx               # reusable progress bar (used by both roles)
-│   └── StatusBadge.jsx               # reusable Submitted/Pending badge
+│   └── StatusBadge.jsx
+│
 ├── context/
-│   └── AppContext.jsx                # auth + assignment state, localStorage persistence
+│   └── AppContext.jsx
+│
 ├── data/
-│   └── mockData.js                   # seed users + assignments ("mock API")
+│   └── mockData.js
+│
 ├── pages/
+│   ├── AdminDashboard.jsx
 │   ├── Login.jsx
-│   ├── StudentDashboard.jsx
-│   └── AdminDashboard.jsx
-├── App.jsx                           # top-level role router (Login/Student/Admin)
-└── main.jsx                          # app entry, wraps App in <AppProvider>
-```
-
----
-
-## 🎨 Visual identity
-
-The UI leans into the subject matter — assignments, deadlines, submissions —
-instead of a generic dark SaaS dashboard:
-
-- **Ledger, not cards.** Assignments and student rows are laid out as ruled
-  ledger entries (hairline dividers, no boxed cards), like lines in a
-  gradebook rather than a stack of identical rounded tiles.
-- **Stamps, not pills.** Submission status is an ink stamp: a solid,
-  slightly-rotated ring reading "Submitted" for done, a dashed "Open" ring
-  for pending — instead of a generic colored badge. Confirming a submission
-  animates the stamp dropping into place, the one deliberate motion moment
-  in the app.
-- **Folder-tab navigation.** The sidebar reads as tabs on a folder rather
-  than a generic nav list.
-- **Index-card sign-in.** The login screen is framed as a physical record
-  card (punch-hole detail, underlined "ruled paper" fields) rather than a
-  boxed form.
-- **Type:** Fraunces (an editorial serif) for headings, IBM Plex Sans for
-  UI text, and IBM Plex Mono strictly for real tabular data — dates and
-  percentages — where fixed-width digits genuinely help.
-- **Palette:** deep pine green (`#16231C`) base, parchment (`#F2EDE1`) text,
-  brass (`#D8A94E`) as the single accent, with moss green / stamp red
-  reserved only for submitted/pending status.
-
-All of this lives in `src/index.css` as Tailwind v4 `@theme` tokens
-(`bg-ledger`, `text-parchment`, `font-display`, etc.) plus two small custom
-utility classes (`.stamp`, `.field-line`), so new components stay consistent
-by using the same tokens rather than one-off colors.
-
-## 🧠 Architecture & design decisions
-
-**State management — Context API over prop drilling.**
-`AppContext` is the single source of truth for the logged-in user and the
-assignment list. Both dashboards, the login screen, and every shared
-component read from `useApp()` instead of passing the same props down
-several levels. This keeps components focused on rendering rather than
-plumbing.
-
-**Mock backend — localStorage as the persistence layer.**
-There's no server, so `AppContext` seeds itself from `mockData.js` on first
-load, then reads/writes two localStorage keys (`je_current_user`,
-`je_assignments`) on every change. This is a thin stand-in for what would
-otherwise be REST/GraphQL calls — swapping it for a real API later would
-mean changing `AppContext` only, not any page or component.
-
-**Per-user data isolation is enforced in the data layer, not the UI.**
-- Students only ever read `assignment.submissions[currentUser.id]` — they
-  have no code path that can read another student's status.
-- Admins filter `assignments` by `createdBy === currentUser.id` before
-  rendering anything, so one admin never sees another admin's assignments.
-
-This means the isolation isn't just "hidden in the UI" — the component
-never receives the other user's data in the first place.
-
-**Reusable primitives.**
-`ProgressBar` and `StatusBadge` are deliberately generic (no assignment- or
-role-specific logic inside them) so they're reused as-is in three different
-contexts: a student's overall completion bar, an admin's aggregate
-per-assignment bar, and the binary (0%/100%) per-student bar in the admin
-breakdown.
-
-**Double-verification submission flow.**
-`AssignmentCard` holds a local `showConfirmation` boolean. Clicking
-"I have submitted" only opens a confirmation modal; the actual state change
-(`setSubmissionStatus`) fires only after the second, explicit
-"Yes, Confirm Submission" click. This avoids accidental taps changing a
-real submission record.
-
-**Responsiveness.**
-Tailwind's responsive prefixes (`sm:`, `lg:`) drive the layout: the sidebar
-is a fixed column on `lg` screens and an off-canvas drawer (triggered from
-the navbar hamburger button) below that; stat cards and grids collapse from
-3–4 columns down to 1 column on narrow viewports.
-
----
-
-## 📦 Deployment
-
-The project builds to a static `dist/` folder, so it deploys to any static
-host.
-
-**Vercel**
-1. Import the GitHub repo at vercel.com/new.
-2. Framework preset: Vite. Build command: `npm run build`. Output dir: `dist`.
-3. Deploy — no environment variables are needed.
-
-**Netlify**
-1. app.netlify.com → "Add new site" → "Import an existing project" → pick
-   this repo.
-2. Build command: `npm run build`. Publish directory: `dist`.
-3. Deploy.
-
-(Or drag-and-drop the local `dist/` folder onto Netlify's dashboard for a
-one-off deploy without connecting Git.)
-
----
-
-## 🔭 Possible next steps
-
-- Replace the mock data layer with a real API (Express/Firebase/Supabase),
-  changing only `AppContext.jsx`.
-- Real authentication (passwords are currently unchecked, by design, since
-  there's no backend).
-- Assignment editing/deletion for admins, and file-upload submissions
-  instead of external Drive links.
+│   └── StudentDashboard.jsx
+│
+├── App.jsx
+├── index.css
+└── main.jsx
