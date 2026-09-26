@@ -35,7 +35,7 @@ function TabList({ role, onClose }) {
         }
       },
       {
-        rootMargin: "-15% 0px -60% 0px",
+        rootMargin: "-20% 0px -60% 0px",
         threshold: [0.1, 0.25, 0.5, 0.75],
       }
     );
@@ -56,8 +56,12 @@ function TabList({ role, onClose }) {
   };
 
   return (
-    <nav className="flex flex-col gap-1 px-3 pt-6">
-      {items.map((item) => {
+    <nav className="flex flex-col gap-1 px-3 pt-7">
+      <p className="mb-3 px-4 text-[9px] font-medium uppercase tracking-[0.22em] text-white/20">
+        Workspace
+      </p>
+
+      {items.map((item, index) => {
         const active = activeTarget === item.target;
 
         return (
@@ -65,31 +69,40 @@ function TabList({ role, onClose }) {
             key={item.label}
             type="button"
             onClick={() => handleNavigation(item.target)}
-            className={`group relative flex items-center overflow-hidden px-4 py-3 text-left text-sm transition-all duration-300 ${
+            className={`group relative flex h-11 items-center overflow-hidden px-4 text-left text-sm transition-all duration-500 ${
               active
-                ? "bg-[#f4b942]/10 text-white"
-                : "text-white/35 hover:bg-white/[0.035] hover:text-white"
+                ? "bg-white/[0.055] text-white"
+                : "text-white/30 hover:bg-white/[0.025] hover:text-white/70"
             }`}
+            style={{
+              animationDelay: `${index * 0.08}s`,
+            }}
           >
-            {active && (
-              <span className="absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 bg-[#f4b942] shadow-[0_0_10px_rgba(244,185,66,0.6)]" />
-            )}
+            <span
+              className={`absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 bg-[#f4b942] transition-all duration-500 ${
+                active ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"
+              }`}
+            />
 
             <span
-              className={`transition-all duration-300 ${
+              className={`transition-all duration-500 ${
                 active
-                  ? "translate-x-1 text-[#f4b942]"
+                  ? "translate-x-1 text-white"
                   : "group-hover:translate-x-1"
               }`}
             >
               {item.label}
             </span>
 
-            {!active && (
-              <span className="ml-auto translate-x-2 text-white/0 transition-all duration-300 group-hover:translate-x-0 group-hover:text-white/20">
-                →
-              </span>
-            )}
+            <span
+              className={`ml-auto text-xs transition-all duration-500 ${
+                active
+                  ? "translate-x-0 text-[#f4b942]/50"
+                  : "translate-x-2 text-transparent group-hover:translate-x-0 group-hover:text-white/15"
+              }`}
+            >
+              →
+            </span>
           </button>
         );
       })}
@@ -100,41 +113,43 @@ function TabList({ role, onClose }) {
 function Sidebar({ role = "student", open, onClose }) {
   return (
     <>
-      <aside className="hidden min-h-[calc(100vh-72px)] w-56 shrink-0 border-r border-white/10 bg-[#0b0b0c] lg:block">
+      <aside className="hidden min-h-[calc(100vh-72px)] w-56 shrink-0 border-r border-white/[0.08] bg-[#0b0b0c] lg:block">
         <TabList role={role} />
       </aside>
 
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/70 backdrop-blur-md animate-fade-in"
             onClick={onClose}
             aria-hidden="true"
           />
 
-          <aside className="relative z-50 h-full w-72 animate-[slideIn_0.3s_ease-out] border-r border-white/10 bg-[#0b0b0c] shadow-2xl">
-            <div className="flex h-[72px] items-center justify-between border-b border-white/10 px-5">
+          <aside className="relative z-50 h-full w-72 animate-[slideIn_0.45s_cubic-bezier(0.22,1,0.36,1)] border-r border-white/10 bg-[#0b0b0c] shadow-2xl">
+            <div className="flex h-[72px] items-center justify-between border-b border-white/[0.08] px-5">
               <div>
-                <p className="text-sm font-semibold text-white">Navigation</p>
+                <p className="text-sm font-semibold tracking-[-0.02em] text-white">
+                  Navigation
+                </p>
 
-                <p className="mt-0.5 text-[10px] uppercase tracking-[0.15em] text-white/25">
-                  Workspace
+                <p className="mt-1 text-[9px] uppercase tracking-[0.2em] text-white/20">
+                  JoinEazy
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center text-white/30 transition-all duration-300 hover:rotate-90 hover:text-white"
+                className="flex h-8 w-8 items-center justify-center text-white/25 transition-all duration-500 hover:rotate-90 hover:text-white"
                 aria-label="Close navigation"
               >
                 <svg
-                  width="19"
-                  height="19"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="1.7"
+                  strokeWidth="1.5"
                 >
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>
