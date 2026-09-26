@@ -1,21 +1,70 @@
+import { useEffect, useState } from "react";
+
 const NAV_ITEMS = {
-  student: ["Dashboard", "Assignments", "Progress"],
-  admin: ["Dashboard", "Assignments", "Students"],
+  student: [
+    { label: "Dashboard", target: "dashboard" },
+    { label: "Assignments", target: "assignments" },
+    { label: "Progress", target: "progress" },
+  ],
+  admin: [
+    { label: "Dashboard", target: "dashboard" },
+    { label: "Assignments", target: "assignments" },
+    { label: "Students", target: "students" },
+  ],
 };
 
 function TabList({ role, onClose }) {
   const items = NAV_ITEMS[role] || NAV_ITEMS.student;
+  const [activeTarget, setActiveTarget] = useState(items[0].target);
+
+  useEffect(() => {
+    const sections = items
+      .map((item) => document.getElementById(item.target))
+      .filter(Boolean);
+
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible[0]) {
+          setActiveTarget(visible[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-15% 0px -60% 0px",
+        threshold: [0.1, 0.25, 0.5, 0.75],
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [items]);
+
+  const handleNavigation = (target) => {
+    document.getElementById(target)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    setActiveTarget(target);
+    onClose?.();
+  };
 
   return (
     <nav className="flex flex-col gap-1 px-3 pt-6">
-      {items.map((item, index) => {
-        const active = index === 0;
+      {items.map((item) => {
+        const active = activeTarget === item.target;
 
         return (
           <button
-            key={item}
+            key={item.label}
             type="button"
-            onClick={onClose}
+            onClick={() => handleNavigation(item.target)}
             className={`group relative flex items-center overflow-hidden px-4 py-3 text-left text-sm transition-all duration-300 ${
               active
                 ? "bg-[#f4b942]/10 text-white"
@@ -33,7 +82,7 @@ function TabList({ role, onClose }) {
                   : "group-hover:translate-x-1"
               }`}
             >
-              {item}
+              {item.label}
             </span>
 
             {!active && (
@@ -63,10 +112,11 @@ function Sidebar({ role = "student", open, onClose }) {
             aria-hidden="true"
           />
 
-          <aside className="relative z-50 h-full w-72 border-r border-white/10 bg-[#0b0b0c] shadow-2xl">
+          <aside className="relative z-50 h-full w-72 animate-[slideIn_0.3s_ease-out] border-r border-white/10 bg-[#0b0b0c] shadow-2xl">
             <div className="flex h-[72px] items-center justify-between border-b border-white/10 px-5">
               <div>
                 <p className="text-sm font-semibold text-white">Navigation</p>
+
                 <p className="mt-0.5 text-[10px] uppercase tracking-[0.15em] text-white/25">
                   Workspace
                 </p>
@@ -75,7 +125,7 @@ function Sidebar({ role = "student", open, onClose }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center text-white/35 transition-all duration-300 hover:rotate-90 hover:text-white"
+                className="flex h-8 w-8 items-center justify-center text-white/30 transition-all duration-300 hover:rotate-90 hover:text-white"
                 aria-label="Close navigation"
               >
                 <svg
