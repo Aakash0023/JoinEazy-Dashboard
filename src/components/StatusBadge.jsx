@@ -1,25 +1,23 @@
-/**
- * Renders submission status as an ink stamp — "Submitted" stamped down for
- * done, a plain dashed circle standing in for an entry still open.
- */
-function StatusBadge({ submitted, animate = false, size = "md" }) {
-  const dims = size === "sm" ? "w-11 h-11 text-[0.5rem]" : "w-[3.25rem] h-[3.25rem] text-[0.6rem]";
-
-  if (submitted) {
+function StatusBadge({ status }) {
+  if (status === "Submitted") {
     return (
-      <span
-        className={`stamp ${dims} ${animate ? "stamp-animate" : ""}`}
-        role="status"
-        aria-label="Submitted"
-      >
+      <span className="inline-flex items-center rounded-full bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700">
         Submitted
       </span>
     );
   }
 
+  if (status === "Overdue") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700">
+        Overdue
+      </span>
+    );
+  }
+
   return (
-    <span className={`stamp stamp-pending ${dims}`} role="status" aria-label="Not yet submitted">
-      Open
+    <span className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700">
+      Pending
     </span>
   );
 }

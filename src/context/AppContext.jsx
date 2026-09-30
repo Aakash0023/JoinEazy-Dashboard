@@ -6,6 +6,8 @@ import {
   assignments as seedAssignments,
 } from "../data/mockData";
 
+const AppContext = createContext();
+
 const STORAGE_KEYS = {
   currentUser: "je_current_user",
   assignments: "je_assignments",
@@ -13,16 +15,14 @@ const STORAGE_KEYS = {
   groups: "je_groups",
 };
 
-function loadJSON(key, fallback) {
+const loadJSON = (key, fallback) => {
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : fallback;
   } catch {
     return fallback;
   }
-}
-
-const AppContext = createContext(null);
+};
 
 export function AppProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(() =>
@@ -42,6 +42,17 @@ export function AppProvider({ children }) {
   );
 
   useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem(
+        STORAGE_KEYS.currentUser,
+        JSON.stringify(currentUser)
+      );
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.currentUser);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.assignments, JSON.stringify(assignments));
   }, [assignments]);
 
@@ -53,218 +64,7 @@ export function AppProvider({ children }) {
     localStorage.setItem(STORAGE_KEYS.groups, JSON.stringify(groups));
   }, [groups]);
 
-  useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem(
-        STORAGE_KEYS.currentUser,
-        JSON.stringify(currentUser)
-      );
-    } else {
-      localStorage.removeItem(STORAGE_KEYS.currentUser);
-    }
-  }, [currentUser]);
-
-  const login = (user) => {
-    setCurrentUser(user);
-  };
-
-  const logout = () => {
-    setCurrentUser(null);
-  };
-
-  const addAssignment = ({
-    courseId,
-    title,
-    description,
-    dueDate,
-    dueTime,
-    driveLink,
-    submissionType,
-  }) => {
-    const course = courses.find((item) => item.id === Number(courseId));
-
-    if (!course) return;
-
-    setAssignments((prev) => [
-      {
-        id: Date.now(),
-        courseId: course.id,
-        title,
-        description,
-        dueDate,
-        dueTime,
-        driveLink,
-        submissionType,
-        acknowledgments: {},
-      },
-      ...prev,
-    ]);
-  };
-
-  const updateAssignment = (assignmentId, updates) => {
-    setAssignments((prev) =>
-      prev.map((assignment) =>
-        assignment.id === assignmentId
-          ? {
-              ...assignment,
-              ...updates,
-            }
-          : assignment
-      )
-    );
-  };
-
-  const deleteAssignment = (assignmentId) => {
-    setAssignments((prev) =>
-      prev.filter((assignment) => assignment.id !== assignmentId)
-    );
-  };
-
-  const acknowledgeAssignment = (assignmentId, studentId) => {
-    setAssignments((prev) =>
-      prev.map((assignment) => {
-        if (assignment.id !== assignmentId) return assignment;
-
-        if (assignment.submissionType === "individual") {
-          return {
-            ...assignment,
-            acknowledgments: {
-              ...assignment.acknowledgments,
-              [studentId]: new Date().toISOString(),
-            },
-          };
-        }
-
-        const group = groups.find(
-          (item) =>
-            item.memberIds.includes(studentId) &&
-            item.courseId === assignment.courseId
-        );
-
-        if (!group || group.leaderId !== studentId) {
-          return assignment;
-        }
-
-        const updatedAcknowledgments = {
-          ...assignment.acknowledgments,
-        };
-
-        group.memberIds.forEach((memberId) => {
-          updatedAcknowledgments[memberId] = new Date().toISOString();
-        });
-
-        return {
-          ...assignment,
-          acknowledgments: updatedAcknowledgments,
-        };
-      })
-    );
-  };
-
-  const getCourseAssignments = (courseId) =>
-    assignments.filter(
-      (assignment) => assignment.courseId === Number(courseId)
-    );
-
-  const getStudentCourses = (studentId) =>
-    courses.filter((course) => course.studentIds.includes(studentId));
-
-  const getProfessorCourses = (professorId) =>
-    courses.filter((course) => course.professorId === professorId);
-
-  const getStudentGroup = (studentId, courseId) =>
-    groups.find(
-      (group) =>
-        group.courseId === Number(courseId) &&
-        group.memberIds.includes(studentId)
-    );
-
-  const getAssignmentStatus = (assignment, studentId) => {
-    if (assignment.acknowledgments?.[studentId]) {
-      return {
-        acknowledged: true,
-        canAcknowledge: false,
-        timestamp: assignment.acknowledgments[studentId],
-      };
-    }
-
-    if (assignment.submissionType === "individual") {
-      return {
-        acknowledged: false,
-        canAcknowledge: true,
-        timestamp: null,
-      };
-    }
-
-    const group = getStudentGroup(studentId, assignment.courseId);
-
-    if (!group) {
-      return {
-        acknowledged: false,
-        canAcknowledge: false,
-        noGroup: true,
-        timestamp: null,
-      };
-    }
-
-    return {
-      acknowledged: false,
-      canAcknowledge: group.leaderId === studentId,
-      isLeader: group.leaderId === studentId,
-      timestamp: null,
-    };
-  };
-
-  const getAssignmentAnalytics = (assignment) => {
-    const course = courses.find((item) => item.id === assignment.courseId);
-
-    if (!course) {
-      return {
-        total: 0,
-        submitted: 0,
-        pending: 0,
-        progress: 0,
-      };
-    }
-
-    const total =
-      assignment.submissionType === "group"
-        ? groups.filter((group) => group.courseId === course.id).length
-        : course.studentIds.length;
-
-    const submitted =
-      assignment.submissionType === "group"
-        ? groups.filter(
-            (group) =>
-              group.courseId === course.id &&
-              group.memberIds.some(
-                (memberId) => assignment.acknowledgments?.[memberId]
-              )
-          ).length
-        : course.studentIds.filter(
-            (studentId) => assignment.acknowledgments?.[studentId]
-          ).length;
-
-    const pending = Math.max(total - submitted, 0);
-    const progress = total ? Math.round((submitted / total) * 100) : 0;
-
-    return {
-      total,
-      submitted,
-      pending,
-      progress,
-    };
-  };
-
-  const resetDemoData = () => {
-    setAssignments(seedAssignments);
-    setCourses(seedCourses);
-    setGroups(seedGroups);
-
-    localStorage.removeItem(STORAGE_KEYS.assignments);
-    localStorage.removeItem(STORAGE_KEYS.courses);
-    localStorage.removeItem(STORAGE_KEYS.groups);
-  };
+  const allUsers = useMemo(() => seedUsers, []);
 
   const students = useMemo(
     () => seedUsers.filter((user) => user.role === "student"),
@@ -276,16 +76,222 @@ export function AppProvider({ children }) {
     []
   );
 
+  const login = (user) => {
+    setCurrentUser(user);
+  };
+
+  const logout = () => {
+    setCurrentUser(null);
+  };
+
+  const addAssignment = (assignmentData) => {
+    const newAssignment = {
+      ...assignmentData,
+      id: Date.now(),
+      acknowledgments: {},
+    };
+
+    if (assignmentData.submissionType === "individual") {
+      const course = courses.find(
+        (item) => item.id === assignmentData.courseId
+      );
+
+      if (course) {
+        newAssignment.acknowledgments = course.studentIds.reduce(
+          (result, studentId) => {
+            result[studentId] = null;
+            return result;
+          },
+          {}
+        );
+      }
+    }
+
+    setAssignments((prev) => [...prev, newAssignment]);
+  };
+
+  const updateAssignment = (assignmentId, updatedData) => {
+    setAssignments((prev) =>
+      prev.map((assignment) =>
+        assignment.id === assignmentId
+          ? { ...assignment, ...updatedData }
+          : assignment
+      )
+    );
+  };
+
+  const deleteAssignment = (assignmentId) => {
+    setAssignments((prev) =>
+      prev.filter((assignment) => assignment.id !== assignmentId)
+    );
+  };
+
+  const acknowledgeAssignment = (assignmentId, studentId = currentUser?.id) => {
+    if (!studentId) return;
+
+    setAssignments((prev) =>
+      prev.map((assignment) => {
+        if (assignment.id !== assignmentId) {
+          return assignment;
+        }
+
+        return {
+          ...assignment,
+          acknowledgments: {
+            ...assignment.acknowledgments,
+            [studentId]: new Date().toISOString(),
+          },
+        };
+      })
+    );
+  };
+
+  const getCourseAssignments = (courseId) => {
+    return assignments.filter((assignment) => assignment.courseId === courseId);
+  };
+
+  const getStudentCourses = (studentId = currentUser?.id) => {
+    return courses.filter((course) => course.studentIds.includes(studentId));
+  };
+
+  const getProfessorCourses = (professorId = currentUser?.id) => {
+    return courses.filter((course) => course.professorId === professorId);
+  };
+
+  const getStudentGroup = (courseId, studentId = currentUser?.id) => {
+    return groups.find(
+      (group) =>
+        group.courseId === courseId && group.memberIds.includes(studentId)
+    );
+  };
+
+  const getAssignmentStatus = (assignment, studentId = currentUser?.id) => {
+    const acknowledged = Boolean(assignment.acknowledgments?.[studentId]);
+
+    const dueDateTime = new Date(
+      `${assignment.dueDate}T${assignment.dueTime || "23:59"}`
+    );
+
+    const overdue =
+      !acknowledged &&
+      !Number.isNaN(dueDateTime.getTime()) &&
+      dueDateTime < new Date();
+
+    return {
+      acknowledged,
+      overdue,
+      status: acknowledged ? "submitted" : overdue ? "overdue" : "pending",
+    };
+  };
+
+  const getAssignmentAnalytics = (assignment) => {
+    const course = courses.find((item) => item.id === assignment.courseId);
+
+    if (!course) {
+      return {
+        total: 0,
+        submitted: 0,
+        pending: 0,
+        overdue: 0,
+        percentage: 0,
+        students: [],
+        groups: [],
+      };
+    }
+
+    const courseStudents = students.filter((student) =>
+      course.studentIds.includes(student.id)
+    );
+
+    const studentStatuses = courseStudents.map((student) => {
+      const status = getAssignmentStatus(assignment, student.id);
+
+      return {
+        student,
+        ...status,
+      };
+    });
+
+    const submitted = studentStatuses.filter(
+      (item) => item.acknowledged
+    ).length;
+
+    const overdue = studentStatuses.filter((item) => item.overdue).length;
+
+    const pending = studentStatuses.filter(
+      (item) => !item.acknowledged && !item.overdue
+    ).length;
+
+    const total = courseStudents.length;
+
+    const courseGroups = groups.filter(
+      (group) => group.courseId === assignment.courseId
+    );
+
+    const groupStatuses = courseGroups.map((group) => {
+      const groupMembers = courseStudents.filter((student) =>
+        group.memberIds.includes(student.id)
+      );
+
+      const submittedByMember = groupMembers.some(
+        (student) => assignment.acknowledgments?.[student.id]
+      );
+
+      const dueDateTime = new Date(
+        `${assignment.dueDate}T${assignment.dueTime || "23:59"}`
+      );
+
+      const groupOverdue =
+        !submittedByMember &&
+        !Number.isNaN(dueDateTime.getTime()) &&
+        dueDateTime < new Date();
+
+      return {
+        group,
+        members: groupMembers,
+        submitted: submittedByMember,
+        overdue: groupOverdue,
+        status: submittedByMember
+          ? "submitted"
+          : groupOverdue
+          ? "overdue"
+          : "pending",
+      };
+    });
+
+    return {
+      total,
+      submitted,
+      pending,
+      overdue,
+      percentage: total ? Math.round((submitted / total) * 100) : 0,
+      students: studentStatuses,
+      groups: groupStatuses,
+    };
+  };
+
+  const resetDemoData = () => {
+    setAssignments(seedAssignments);
+    setCourses(seedCourses);
+    setGroups(seedGroups);
+    setCurrentUser(null);
+
+    localStorage.removeItem(STORAGE_KEYS.assignments);
+    localStorage.removeItem(STORAGE_KEYS.courses);
+    localStorage.removeItem(STORAGE_KEYS.groups);
+    localStorage.removeItem(STORAGE_KEYS.currentUser);
+  };
+
   const value = {
     currentUser,
-    login,
-    logout,
+    allUsers,
     assignments,
     courses,
     groups,
     students,
     admins,
-    allUsers: seedUsers,
+    login,
+    logout,
     addAssignment,
     updateAssignment,
     deleteAssignment,
@@ -303,11 +309,5 @@ export function AppProvider({ children }) {
 }
 
 export function useApp() {
-  const context = useContext(AppContext);
-
-  if (!context) {
-    throw new Error("useApp must be used inside an <AppProvider>");
-  }
-
-  return context;
+  return useContext(AppContext);
 }
