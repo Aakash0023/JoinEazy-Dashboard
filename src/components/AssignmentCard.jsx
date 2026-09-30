@@ -166,7 +166,10 @@ function AssignmentCard({ assignment }) {
             )}
           </div>
 
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div
+            className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+            onClick={(event) => event.stopPropagation()}
+          >
             <a
               href={assignment.driveLink}
               target="_blank"
