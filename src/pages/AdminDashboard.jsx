@@ -75,14 +75,14 @@ function AdminDashboard() {
             <div className="relative flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
               <div>
                 <div className="flex items-center gap-3">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942] shadow-[0_0_10px_rgba(244,185,66,0.7)]" />
 
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]/80">
+                  <p className="glow-accent text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]/80">
                     {selectedCourse.code}
                   </p>
                 </div>
 
-                <h1 className="mt-4 text-4xl font-semibold tracking-[-0.055em] text-white sm:text-6xl">
+                <h1 className="glow-heading mt-4 text-4xl font-semibold tracking-[-0.055em] text-white sm:text-6xl">
                   {selectedCourse.name}
                 </h1>
 
@@ -130,13 +130,13 @@ function AdminDashboard() {
           </section>
 
           <section className="pb-20 pt-16">
-            <div className="border-b border-white/10 pb-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
+            <div className="glow-line border-b border-white/10 pb-5">
+              <p className="glow-accent text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
                 Course management
               </p>
 
               <div className="mt-3 flex items-end justify-between gap-4">
-                <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
+                <h2 className="glow-heading text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
                   Assignments
                 </h2>
 
@@ -164,49 +164,51 @@ function AdminDashboard() {
               })}
 
               {!courseAssignments.length && (
-                <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.01] px-6 py-16 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.025] text-[#f4b942]">
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.6"
+                <div className="glow-card glow-border rounded-xl border border-dashed border-white/10 bg-white/[0.01] px-6 py-16 text-center">
+                  <div className="relative z-10">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.025] text-[#f4b942] shadow-[0_0_24px_rgba(244,185,66,0.06)]">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                      >
+                        <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+                      </svg>
+                    </div>
+
+                    <h3 className="glow-heading mt-5 text-base font-medium text-white">
+                      No assignments yet
+                    </h3>
+
+                    <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-white/30">
+                      Create an assignment for this course to start tracking
+                      submissions.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateModal(true)}
+                      className="glow-accent mt-6 text-sm font-medium text-[#f4b942] transition-colors duration-300 hover:text-[#ffd166]"
                     >
-                      <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-                    </svg>
+                      Create assignment →
+                    </button>
                   </div>
-
-                  <h3 className="mt-5 text-base font-medium text-white">
-                    No assignments yet
-                  </h3>
-
-                  <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-white/30">
-                    Create an assignment for this course to start tracking
-                    submissions.
-                  </p>
-
-                  <button
-                    type="button"
-                    onClick={() => setShowCreateModal(true)}
-                    className="mt-6 text-sm font-medium text-[#f4b942] transition-colors duration-300 hover:text-[#ffd166]"
-                  >
-                    Create assignment →
-                  </button>
                 </div>
               )}
             </div>
           </section>
 
           <section className="pb-20 pt-4">
-            <div className="border-b border-white/10 pb-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
+            <div className="glow-line border-b border-white/10 pb-5">
+              <p className="glow-accent text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
                 Classroom
               </p>
 
               <div className="mt-3 flex items-end justify-between gap-4">
-                <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
+                <h2 className="glow-heading text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
                   Groups
                 </h2>
 
@@ -232,22 +234,20 @@ function AdminDashboard() {
                 return (
                   <div
                     key={group.id}
-                    className="group relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.15] hover:bg-[#121214]"
+                    className="glow-card glow-border group relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.15] hover:bg-[#121214]"
                   >
-                    <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full bg-[#f4b942]/[0.025] blur-3xl" />
-
-                    <div className="relative">
+                    <div className="relative z-10">
                       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942]" />
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942] shadow-[0_0_10px_rgba(244,185,66,0.7)]" />
 
                             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/25">
                               Group
                             </p>
                           </div>
 
-                          <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
+                          <h3 className="glow-heading mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
                             {group.name}
                           </h3>
                         </div>
@@ -263,7 +263,7 @@ function AdminDashboard() {
                         </p>
 
                         <div className="mt-3 flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f4b942]/20 bg-[#f4b942]/[0.05] text-xs font-semibold text-[#f4b942]">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f4b942]/20 bg-[#f4b942]/[0.05] text-xs font-semibold text-[#f4b942] shadow-[0_0_18px_rgba(244,185,66,0.06)]">
                             {leader?.name?.charAt(0) || "?"}
                           </div>
 
@@ -307,7 +307,7 @@ function AdminDashboard() {
                               </div>
 
                               {member.id === group.leaderId && (
-                                <span className="rounded-full bg-[#f4b942]/[0.08] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#f4b942]">
+                                <span className="rounded-full bg-[#f4b942]/[0.08] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#f4b942] shadow-[0_0_14px_rgba(244,185,66,0.05)]">
                                   Leader
                                 </span>
                               )}
@@ -322,8 +322,8 @@ function AdminDashboard() {
             </div>
 
             {!courseGroups.length && (
-              <div className="rounded-xl border border-dashed border-white/10 px-6 py-16 text-center">
-                <p className="text-sm text-white/30">
+              <div className="glow-card rounded-xl border border-dashed border-white/10 px-6 py-16 text-center">
+                <p className="relative z-10 text-sm text-white/30">
                   No groups have been created for this course yet.
                 </p>
               </div>
@@ -349,15 +349,15 @@ function AdminDashboard() {
 
           <div className="relative max-w-5xl">
             <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942] shadow-[0_0_12px_rgba(244,185,66,0.75)]" />
 
-              <p className="animate-fade-up text-[10px] font-semibold uppercase tracking-[0.28em] text-[#f4b942]">
+              <p className="glow-accent animate-fade-up text-[10px] font-semibold uppercase tracking-[0.28em] text-[#f4b942]">
                 Faculty dashboard
               </p>
             </div>
 
             <h1
-              className="mt-5 animate-fade-up text-5xl font-semibold leading-[0.95] tracking-[-0.065em] text-white sm:text-6xl lg:text-8xl"
+              className="glow-heading mt-5 animate-fade-up text-5xl font-semibold leading-[0.95] tracking-[-0.065em] text-white sm:text-6xl lg:text-8xl"
               style={{ animationDelay: "0.1s" }}
             >
               Your courses.
@@ -377,16 +377,16 @@ function AdminDashboard() {
 
         <section id="assignments" className="scroll-mt-24 pt-16">
           <div
-            className="animate-fade-up border-b border-white/10 pb-5"
+            className="glow-line animate-fade-up border-b border-white/10 pb-5"
             style={{ animationDelay: "0.3s" }}
           >
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
+                <p className="glow-accent text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
                   Teaching
                 </p>
 
-                <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
+                <h2 className="glow-heading mt-3 text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
                   Your Courses
                 </h2>
               </div>
@@ -432,19 +432,17 @@ function AdminDashboard() {
                     animationDelay: `${0.4 + index * 0.1}s`,
                   }}
                 >
-                  <div className="relative h-full overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012] p-6 transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/[0.15] group-hover:bg-[#121214] sm:p-7">
-                    <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-[#f4b942]/[0.035] blur-3xl opacity-60 transition-opacity duration-500 group-hover:opacity-100" />
+                  <div className="glow-card glow-border relative h-full overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012] p-6 transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/[0.15] group-hover:bg-[#121214] sm:p-7">
+                    <div className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[#f4b942] shadow-[0_0_12px_rgba(244,185,66,0.6)] transition-transform duration-500 group-hover:scale-y-100" />
 
-                    <div className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[#f4b942] transition-transform duration-500 group-hover:scale-y-100" />
-
-                    <div className="relative">
+                    <div className="relative z-10">
                       <div className="flex items-start justify-between gap-5">
                         <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#f4b942]/70">
+                          <p className="glow-accent text-[10px] font-semibold uppercase tracking-[0.18em] text-[#f4b942]/70">
                             {course.code}
                           </p>
 
-                          <h3 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-white">
+                          <h3 className="glow-heading mt-3 text-2xl font-semibold tracking-[-0.045em] text-white">
                             {course.name}
                           </h3>
 
@@ -453,7 +451,7 @@ function AdminDashboard() {
                           </p>
                         </div>
 
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-white/25 transition-all duration-500 group-hover:border-[#f4b942]/30 group-hover:bg-[#f4b942]/[0.05] group-hover:text-[#f4b942]">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-white/25 transition-all duration-500 group-hover:border-[#f4b942]/30 group-hover:bg-[#f4b942]/[0.05] group-hover:text-[#f4b942] group-hover:shadow-[0_0_18px_rgba(244,185,66,0.08)]">
                           →
                         </span>
                       </div>
@@ -464,14 +462,14 @@ function AdminDashboard() {
                             Class overview
                           </span>
 
-                          <span className="text-xs font-medium text-white/50">
+                          <span className="glow-number text-xs font-semibold text-white/60">
                             {completion}%
                           </span>
                         </div>
 
                         <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-white/[0.07]">
                           <div
-                            className="h-full rounded-full bg-[#f4b942] transition-all duration-700"
+                            className="h-full rounded-full bg-[#f4b942] shadow-[0_0_10px_rgba(244,185,66,0.35),0_0_22px_rgba(244,185,66,0.12)] transition-all duration-700"
                             style={{ width: `${completion}%` }}
                           />
                         </div>
@@ -501,8 +499,8 @@ function AdminDashboard() {
           </div>
 
           {!professorCourses.length && (
-            <div className="rounded-xl border border-dashed border-white/10 px-6 py-16 text-center">
-              <p className="text-sm text-white/30">
+            <div className="glow-card rounded-xl border border-dashed border-white/10 px-6 py-16 text-center">
+              <p className="relative z-10 text-sm text-white/30">
                 No courses have been assigned to you yet.
               </p>
             </div>
@@ -511,14 +509,14 @@ function AdminDashboard() {
 
         <section id="students" className="scroll-mt-24 pb-20 pt-24">
           <div
-            className="animate-fade-up border-b border-white/10 pb-5"
+            className="glow-line animate-fade-up border-b border-white/10 pb-5"
             style={{ animationDelay: "0.8s" }}
           >
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
+            <p className="glow-accent text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
               Classroom
             </p>
 
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
+            <h2 className="glow-heading mt-3 text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
               Students
             </h2>
 
@@ -527,7 +525,7 @@ function AdminDashboard() {
             </p>
           </div>
 
-          <div className="mt-5 overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012]">
+          <div className="glow-border mt-5 overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012]">
             {students.map((student, index) => (
               <div
                 key={student.id}
@@ -538,12 +536,12 @@ function AdminDashboard() {
                 }`}
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.025] text-sm font-semibold text-white/60 transition-all duration-500 group-hover:border-[#f4b942]/30 group-hover:bg-[#f4b942]/[0.04] group-hover:text-[#f4b942]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.025] text-sm font-semibold text-white/60 transition-all duration-500 group-hover:border-[#f4b942]/30 group-hover:bg-[#f4b942]/[0.04] group-hover:text-[#f4b942] group-hover:shadow-[0_0_18px_rgba(244,185,66,0.06)]">
                     {student.name.charAt(0)}
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium text-white/80">
+                    <p className="text-sm font-medium text-white/80 transition-all duration-300 group-hover:text-white">
                       {student.name}
                     </p>
 
@@ -567,30 +565,40 @@ function AdminDashboard() {
 
 function CourseStat({ label, value, accent = false }) {
   return (
-    <div className="group bg-[#0b0b0c] px-6 py-7 transition-colors duration-500 hover:bg-white/[0.025] sm:px-7">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/25">
-        {label}
-      </p>
+    <div className="group relative overflow-hidden bg-[#0b0b0c] px-6 py-7 transition-colors duration-500 hover:bg-white/[0.025] sm:px-7">
+      <div className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-[#f4b942]/[0.04] blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-      <p
-        className={`mt-4 text-4xl font-semibold tracking-[-0.05em] transition-transform duration-500 group-hover:translate-x-1 ${
-          accent ? "text-[#f4b942]" : "text-white"
-        }`}
-      >
-        {value}
-      </p>
+      <div className="relative">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/25">
+          {label}
+        </p>
+
+        <p
+          className={`glow-number mt-4 text-4xl font-semibold tracking-[-0.05em] transition-transform duration-500 group-hover:translate-x-1 ${
+            accent ? "glow-accent text-[#f4b942]" : "text-white"
+          }`}
+        >
+          {value}
+        </p>
+      </div>
     </div>
   );
 }
 
 function MiniStat({ label, value }) {
   return (
-    <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3">
-      <p className="text-[8px] font-semibold uppercase tracking-[0.13em] text-white/20">
-        {label}
-      </p>
+    <div className="group relative overflow-hidden rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3 transition-all duration-300 hover:border-[#f4b942]/10 hover:bg-[#f4b942]/[0.025]">
+      <div className="pointer-events-none absolute -right-4 -top-4 h-10 w-10 rounded-full bg-[#f4b942]/[0.06] blur-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-      <p className="mt-1.5 text-sm font-semibold text-white/65">{value}</p>
+      <div className="relative">
+        <p className="text-[8px] font-semibold uppercase tracking-[0.13em] text-white/20">
+          {label}
+        </p>
+
+        <p className="glow-number mt-1.5 text-sm font-semibold text-white/65">
+          {value}
+        </p>
+      </div>
     </div>
   );
 }

@@ -67,24 +67,24 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
   return (
     <>
       <article
-        className="group relative overflow-hidden border border-white/10 bg-white/[0.02] transition-all duration-500 hover:border-white/[0.18] hover:bg-white/[0.035]"
+        className="glow-card glow-border group relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012] transition-all duration-500 hover:-translate-y-0.5 hover:border-white/[0.15] hover:bg-[#121214]"
         style={{
           animationDelay: `${index * 0.08}s`,
         }}
       >
-        <div className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[#f4b942] transition-transform duration-500 group-hover:scale-y-100" />
+        <div className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[#f4b942] shadow-[0_0_12px_rgba(244,185,66,0.6)] transition-transform duration-500 group-hover:scale-y-100" />
 
-        <div className="p-6 sm:p-7">
+        <div className="relative z-10 p-6 sm:p-7">
           <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-start">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#f4b942]/70">
+                <span className="glow-accent text-[10px] font-semibold uppercase tracking-[0.16em] text-[#f4b942]/70">
                   {assignment.submissionType === "group"
                     ? "Group assignment"
                     : "Individual assignment"}
                 </span>
 
-                <span className="h-1 w-1 bg-white/15" />
+                <span className="h-1 w-1 rounded-full bg-white/15" />
 
                 <span className="text-[10px] uppercase tracking-[0.14em] text-white/20">
                   Due {assignment.dueDate}
@@ -92,7 +92,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
 
                 {assignment.dueTime && (
                   <>
-                    <span className="h-1 w-1 bg-white/15" />
+                    <span className="h-1 w-1 rounded-full bg-white/15" />
 
                     <span className="text-[10px] uppercase tracking-[0.14em] text-white/20">
                       {assignment.dueTime}
@@ -101,7 +101,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 )}
               </div>
 
-              <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-white">
+              <h3 className="glow-heading mt-4 text-2xl font-semibold tracking-[-0.04em] text-white">
                 {assignment.title}
               </h3>
 
@@ -111,12 +111,12 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
             </div>
 
             <div className="flex shrink-0 items-center gap-3">
-              <div className="border border-white/10 bg-white/[0.02] px-4 py-3 text-right">
-                <p className="text-[9px] uppercase tracking-[0.15em] text-white/20">
+              <div className="glow-card rounded-lg border border-white/[0.08] bg-white/[0.025] px-4 py-3 text-right">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/20">
                   Completion
                 </p>
 
-                <p className="mt-1 text-xl font-semibold text-[#f4b942]">
+                <p className="glow-accent mt-1 text-xl font-semibold text-[#f4b942]">
                   {progress}%
                 </p>
               </div>
@@ -124,7 +124,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
               <button
                 type="button"
                 onClick={() => setEditing(true)}
-                className="flex h-10 items-center gap-2 border border-white/10 px-4 text-xs font-medium text-white/35 transition-all duration-300 hover:border-[#f4b942]/30 hover:bg-[#f4b942]/[0.04] hover:text-[#f4b942]"
+                className="flex h-10 items-center gap-2 rounded-lg border border-white/10 px-4 text-xs font-medium text-white/35 transition-all duration-300 hover:border-[#f4b942]/30 hover:bg-[#f4b942]/[0.04] hover:text-[#f4b942] hover:shadow-[0_0_18px_rgba(244,185,66,0.05)]"
               >
                 Edit
               </button>
@@ -132,7 +132,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
               <button
                 type="button"
                 onClick={handleDelete}
-                className="flex h-10 items-center gap-2 border border-red-400/10 px-4 text-xs font-medium text-red-400/50 transition-all duration-300 hover:border-red-400/30 hover:bg-red-400/[0.04] hover:text-red-400"
+                className="flex h-10 items-center gap-2 rounded-lg border border-red-400/10 px-4 text-xs font-medium text-red-400/50 transition-all duration-300 hover:border-red-400/30 hover:bg-red-400/[0.04] hover:text-red-400"
               >
                 Delete
               </button>
@@ -145,7 +145,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 href={assignment.driveLink}
                 target="_blank"
                 rel="noreferrer"
-                className="text-white/35 transition-colors duration-300 hover:text-[#f4b942]"
+                className="glow-accent text-white/35 transition-colors duration-300 hover:text-[#f4b942]"
               >
                 Open OneDrive →
               </a>
@@ -186,46 +186,22 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
             </button>
           </div>
 
-          <div className="mt-5 grid gap-px overflow-hidden border border-white/[0.08] bg-white/[0.08] sm:grid-cols-4">
-            <div className="bg-[#0b0b0c] px-5 py-5">
-              <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-                Total
-              </p>
+          <div className="mt-5 grid gap-px overflow-hidden rounded-lg border border-white/[0.08] bg-white/[0.08] sm:grid-cols-4">
+            <AnalyticsStat label="Total" value={analytics.total} />
 
-              <p className="mt-2 text-2xl font-semibold text-white">
-                {analytics.total}
-              </p>
-            </div>
+            <AnalyticsStat
+              label="Submitted"
+              value={analytics.submitted}
+              tone="success"
+            />
 
-            <div className="bg-[#0b0b0c] px-5 py-5">
-              <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-                Submitted
-              </p>
+            <AnalyticsStat label="Pending" value={analytics.pending} />
 
-              <p className="mt-2 text-2xl font-semibold text-green-400">
-                {analytics.submitted}
-              </p>
-            </div>
-
-            <div className="bg-[#0b0b0c] px-5 py-5">
-              <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-                Pending
-              </p>
-
-              <p className="mt-2 text-2xl font-semibold text-white">
-                {analytics.pending}
-              </p>
-            </div>
-
-            <div className="bg-[#0b0b0c] px-5 py-5">
-              <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-                Overdue
-              </p>
-
-              <p className="mt-2 text-2xl font-semibold text-red-400">
-                {analytics.overdue}
-              </p>
-            </div>
+            <AnalyticsStat
+              label="Overdue"
+              value={analytics.overdue}
+              tone="danger"
+            />
           </div>
 
           <div className="mt-5">
@@ -233,12 +209,12 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
               value={progress}
               showPercent={false}
               size="sm"
-              colorClass="bg-[#f4b942]"
+              colorClass="bg-[#f4b942] shadow-[0_0_10px_rgba(244,185,66,0.35)]"
             />
           </div>
 
           {expanded && (
-            <div className="mt-5 overflow-hidden border border-white/10">
+            <div className="glow-border mt-5 overflow-hidden rounded-lg border border-white/[0.08] bg-[#0d0d0f]">
               {assignment.submissionType === "individual" &&
                 students.map((student, studentIndex) => {
                   const studentStatus =
@@ -264,19 +240,19 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                   return (
                     <div
                       key={student.id}
-                      className={`flex flex-col gap-3 px-4 py-4 transition-colors duration-300 hover:bg-white/[0.025] sm:flex-row sm:items-center sm:justify-between ${
+                      className={`group/row flex flex-col gap-3 px-4 py-4 transition-colors duration-300 hover:bg-white/[0.025] sm:flex-row sm:items-center sm:justify-between ${
                         studentIndex !== students.length - 1
-                          ? "border-b border-white/10"
+                          ? "border-b border-white/[0.07]"
                           : ""
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-white/10 bg-white/[0.025] text-xs font-semibold text-white/60">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.025] text-xs font-semibold text-white/60 transition-all duration-300 group-hover/row:border-[#f4b942]/25 group-hover/row:bg-[#f4b942]/[0.04] group-hover/row:text-[#f4b942]">
                           {student.name.charAt(0)}
                         </div>
 
                         <div>
-                          <p className="text-sm font-medium text-white/70">
+                          <p className="text-sm font-medium text-white/70 transition-colors duration-300 group-hover/row:text-white">
                             {student.name}
                           </p>
 
@@ -294,9 +270,9 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                             size="sm"
                             colorClass={
                               submitted
-                                ? "bg-green-400"
+                                ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.25)]"
                                 : overdue
-                                ? "bg-red-400"
+                                ? "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.2)]"
                                 : "bg-white/15"
                             }
                           />
@@ -337,14 +313,14 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                   return (
                     <div
                       key={group.id}
-                      className={`flex flex-col gap-4 px-4 py-4 transition-colors duration-300 hover:bg-white/[0.025] sm:flex-row sm:items-center sm:justify-between ${
+                      className={`group/row flex flex-col gap-4 px-4 py-4 transition-colors duration-300 hover:bg-white/[0.025] sm:flex-row sm:items-center sm:justify-between ${
                         groupIndex !== courseGroups.length - 1
-                          ? "border-b border-white/10"
+                          ? "border-b border-white/[0.07]"
                           : ""
                       }`}
                     >
                       <div>
-                        <p className="text-sm font-medium text-white/70">
+                        <p className="text-sm font-medium text-white/70 transition-colors duration-300 group-hover/row:text-white">
                           {group.name}
                         </p>
 
@@ -380,16 +356,16 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
         >
           <form
             onSubmit={handleSave}
-            className="w-full max-w-xl overflow-hidden border border-white/10 bg-[#101011] shadow-[0_30px_100px_rgba(0,0,0,0.55)]"
+            className="glow-card glow-border relative w-full max-w-xl overflow-hidden rounded-2xl border border-white/10 bg-[#101011] shadow-[0_30px_100px_rgba(0,0,0,0.55)]"
           >
-            <div className="border-b border-white/10 px-6 py-6 sm:px-8">
+            <div className="relative z-10 border-b border-white/10 px-6 py-6 sm:px-8">
               <div className="flex items-start justify-between gap-5">
                 <div>
-                  <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-[#f4b942]">
+                  <p className="glow-accent text-[9px] font-semibold uppercase tracking-[0.22em] text-[#f4b942]">
                     Faculty workspace
                   </p>
 
-                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-white">
+                  <h3 className="glow-heading mt-3 text-2xl font-semibold tracking-[-0.045em] text-white">
                     Edit assignment
                   </h3>
                 </div>
@@ -397,20 +373,20 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="flex h-9 w-9 items-center justify-center border border-white/10 text-white/25 transition-colors duration-300 hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-white/25 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.03] hover:text-white"
                 >
                   ×
                 </button>
               </div>
             </div>
 
-            <div className="space-y-5 px-6 py-7 sm:px-8">
+            <div className="relative z-10 space-y-5 px-6 py-7 sm:px-8">
               <input
                 type="text"
                 value={form.title}
                 onChange={handleChange("title")}
                 placeholder="Assignment title"
-                className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none placeholder:text-white/15 focus:border-[#f4b942]/40"
+                className="h-12 w-full rounded-lg border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none placeholder:text-white/15 transition-all duration-300 focus:border-[#f4b942]/40 focus:bg-[#f4b942]/[0.025] focus:shadow-[0_0_22px_rgba(244,185,66,0.04)]"
               />
 
               <textarea
@@ -418,7 +394,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 onChange={handleChange("description")}
                 rows={4}
                 placeholder="Description"
-                className="w-full resize-none border border-white/10 bg-white/[0.025] px-4 py-3 text-sm leading-6 text-white outline-none placeholder:text-white/15 focus:border-[#f4b942]/40"
+                className="w-full resize-none rounded-lg border border-white/10 bg-white/[0.025] px-4 py-3 text-sm leading-6 text-white outline-none placeholder:text-white/15 transition-all duration-300 focus:border-[#f4b942]/40 focus:bg-[#f4b942]/[0.025] focus:shadow-[0_0_22px_rgba(244,185,66,0.04)]"
               />
 
               <div className="grid gap-5 sm:grid-cols-2">
@@ -426,14 +402,14 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                   type="date"
                   value={form.dueDate}
                   onChange={handleChange("dueDate")}
-                  className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none focus:border-[#f4b942]/40"
+                  className="h-12 w-full rounded-lg border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition-all duration-300 focus:border-[#f4b942]/40 focus:bg-[#f4b942]/[0.025] focus:shadow-[0_0_22px_rgba(244,185,66,0.04)]"
                 />
 
                 <input
                   type="time"
                   value={form.dueTime}
                   onChange={handleChange("dueTime")}
-                  className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none focus:border-[#f4b942]/40"
+                  className="h-12 w-full rounded-lg border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition-all duration-300 focus:border-[#f4b942]/40 focus:bg-[#f4b942]/[0.025] focus:shadow-[0_0_22px_rgba(244,185,66,0.04)]"
                 />
               </div>
 
@@ -442,7 +418,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 value={form.driveLink}
                 onChange={handleChange("driveLink")}
                 placeholder="OneDrive link"
-                className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none placeholder:text-white/15 focus:border-[#f4b942]/40"
+                className="h-12 w-full rounded-lg border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none placeholder:text-white/15 transition-all duration-300 focus:border-[#f4b942]/40 focus:bg-[#f4b942]/[0.025] focus:shadow-[0_0_22px_rgba(244,185,66,0.04)]"
               />
 
               <div className="grid grid-cols-2 gap-3">
@@ -454,10 +430,10 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                       submissionType: "individual",
                     }))
                   }
-                  className={`border px-4 py-3 text-sm transition-all duration-300 ${
+                  className={`rounded-lg border px-4 py-3 text-sm transition-all duration-300 ${
                     form.submissionType === "individual"
-                      ? "border-[#f4b942]/50 bg-[#f4b942]/[0.06] text-[#f4b942]"
-                      : "border-white/10 text-white/35"
+                      ? "border-[#f4b942]/50 bg-[#f4b942]/[0.06] text-[#f4b942] shadow-[0_0_20px_rgba(244,185,66,0.05)]"
+                      : "border-white/10 text-white/35 hover:border-white/20"
                   }`}
                 >
                   Individual
@@ -471,10 +447,10 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                       submissionType: "group",
                     }))
                   }
-                  className={`border px-4 py-3 text-sm transition-all duration-300 ${
+                  className={`rounded-lg border px-4 py-3 text-sm transition-all duration-300 ${
                     form.submissionType === "group"
-                      ? "border-[#f4b942]/50 bg-[#f4b942]/[0.06] text-[#f4b942]"
-                      : "border-white/10 text-white/35"
+                      ? "border-[#f4b942]/50 bg-[#f4b942]/[0.06] text-[#f4b942] shadow-[0_0_20px_rgba(244,185,66,0.05)]"
+                      : "border-white/10 text-white/35 hover:border-white/20"
                   }`}
                 >
                   Group
@@ -482,18 +458,18 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
               </div>
             </div>
 
-            <div className="flex flex-col-reverse gap-3 border-t border-white/10 px-6 py-5 sm:flex-row sm:justify-end sm:px-8">
+            <div className="relative z-10 flex flex-col-reverse gap-3 border-t border-white/10 px-6 py-5 sm:flex-row sm:justify-end sm:px-8">
               <button
                 type="button"
                 onClick={() => setEditing(false)}
-                className="h-11 border border-white/10 px-6 text-sm font-medium text-white/35 transition-colors duration-300 hover:text-white"
+                className="h-11 rounded-lg border border-white/10 px-6 text-sm font-medium text-white/35 transition-colors duration-300 hover:bg-white/[0.03] hover:text-white"
               >
                 Cancel
               </button>
 
               <button
                 type="submit"
-                className="h-11 bg-[#f4b942] px-6 text-sm font-semibold text-black transition-colors duration-300 hover:bg-[#ffd166]"
+                className="h-11 rounded-lg bg-[#f4b942] px-6 text-sm font-semibold text-black shadow-[0_0_24px_rgba(244,185,66,0.08)] transition-all duration-300 hover:bg-[#ffd166] hover:shadow-[0_0_30px_rgba(244,185,66,0.14)]"
               >
                 Save changes
               </button>
@@ -502,6 +478,41 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
         </div>
       )}
     </>
+  );
+}
+
+function AnalyticsStat({ label, value, tone }) {
+  const valueClass =
+    tone === "success"
+      ? "text-green-400"
+      : tone === "danger"
+      ? "text-red-400"
+      : "text-white";
+
+  return (
+    <div className="group relative overflow-hidden bg-[#0b0b0c] px-5 py-5 transition-colors duration-300 hover:bg-white/[0.025]">
+      <div
+        className={`pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+          tone === "success"
+            ? "bg-green-400/[0.06]"
+            : tone === "danger"
+            ? "bg-red-400/[0.06]"
+            : "bg-white/[0.03]"
+        }`}
+      />
+
+      <div className="relative">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/20">
+          {label}
+        </p>
+
+        <p
+          className={`mt-2 text-2xl font-semibold tracking-[-0.04em] ${valueClass}`}
+        >
+          {value}
+        </p>
+      </div>
+    </div>
   );
 }
 

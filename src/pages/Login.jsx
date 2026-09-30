@@ -26,12 +26,14 @@ function Login() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0b0b0c] text-white">
-      <div className="grid min-h-screen lg:grid-cols-[1.1fr_0.9fr]">
-        <section className="relative hidden overflow-hidden border-r border-white/10 lg:flex lg:flex-col lg:justify-between lg:p-12">
-          <div>
+    <main className="min-h-screen overflow-hidden bg-[#0b0b0c] text-white">
+      <div className="relative grid min-h-screen lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="pointer-events-none absolute -left-32 top-1/4 h-96 w-96 rounded-full bg-[#f4b942]/[0.025] blur-3xl" />
+
+        <section className="relative hidden overflow-hidden border-r border-white/[0.08] lg:flex lg:flex-col lg:justify-between lg:p-12">
+          <div className="relative z-10">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#f4b942] text-sm font-bold text-black">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#f4b942] text-sm font-bold text-black shadow-[0_0_24px_rgba(244,185,66,0.12)]">
                 J
               </div>
 
@@ -41,37 +43,41 @@ function Login() {
             </div>
           </div>
 
-          <div className="max-w-xl">
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
+          <div className="relative z-10 max-w-xl">
+            <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#f4b942]">
               Assignment management
             </p>
 
-            <h1 className="text-5xl font-semibold leading-[1.05] tracking-[-0.04em] xl:text-6xl">
+            <h1 className="text-5xl font-semibold leading-[1.02] tracking-[-0.055em] xl:text-6xl">
               Keep your work
               <br />
-              <span className="text-white/45">moving forward.</span>
+              <span className="text-white/35">moving forward.</span>
             </h1>
 
-            <p className="mt-7 max-w-md text-base leading-7 text-white/45">
+            <p className="mt-7 max-w-md text-base leading-7 text-white/40">
               Manage assignments, track submissions and stay on top of your
               academic progress from one place.
             </p>
 
-            <div className="mt-10 flex items-center gap-3">
-              <div className="h-1.5 w-16 rounded-full bg-[#f4b942]" />
-              <div className="h-1.5 w-8 rounded-full bg-white/15" />
-              <div className="h-1.5 w-4 rounded-full bg-white/10" />
+            <div className="mt-10 flex items-center gap-2">
+              <div className="h-1.5 w-16 rounded-full bg-[#f4b942] shadow-[0_0_12px_rgba(244,185,66,0.3)]" />
+              <div className="h-1.5 w-8 rounded-full bg-white/10" />
+              <div className="h-1.5 w-4 rounded-full bg-white/[0.06]" />
             </div>
           </div>
 
-          <p className="text-xs text-white/25">Student & faculty workspace</p>
+          <p className="relative z-10 text-xs text-white/20">
+            Student & faculty workspace
+          </p>
         </section>
 
-        <section className="flex min-h-screen items-center justify-center px-5 py-10 sm:px-8">
-          <div className="w-full max-w-md">
+        <section className="relative flex min-h-screen items-center justify-center px-5 py-10 sm:px-8">
+          <div className="pointer-events-none absolute right-0 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full bg-[#f4b942]/[0.025] blur-3xl" />
+
+          <div className="relative z-10 w-full max-w-md">
             <div className="mb-10 lg:hidden">
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#f4b942] text-sm font-bold text-black">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#f4b942] text-sm font-bold text-black shadow-[0_0_24px_rgba(244,185,66,0.12)]">
                   J
                 </div>
 
@@ -82,92 +88,100 @@ function Login() {
             </div>
 
             <div className="mb-8">
-              <p className="text-sm font-medium text-[#f4b942]">Welcome back</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
+                Welcome back
+              </p>
 
-              <h2 className="mt-2 text-3xl font-semibold tracking-[-0.035em]">
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">
                 Sign in to your workspace
               </h2>
 
-              <p className="mt-3 text-sm leading-6 text-white/40">
+              <p className="mt-3 text-sm leading-6 text-white/35">
                 Access your assignments and submission progress.
               </p>
             </div>
 
-            <form onSubmit={handleLogin}>
-              <div className="mb-6">
-                <label className="mb-3 block text-sm font-medium text-white/70">
-                  Continue as
-                </label>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.018] p-5 shadow-[0_25px_80px_rgba(0,0,0,0.2)] sm:p-6">
+              <form onSubmit={handleLogin}>
+                <div className="mb-6">
+                  <label className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.14em] text-white/30">
+                    Continue as
+                  </label>
 
-                <div className="grid grid-cols-2 border border-white/10 bg-white/[0.025] p-1">
-                  <button
-                    type="button"
-                    onClick={() => setRole("student")}
-                    className={`py-2.5 text-sm font-medium transition ${
-                      role === "student"
-                        ? "bg-white text-black"
-                        : "text-white/40 hover:text-white"
-                    }`}
-                  >
-                    Student
-                  </button>
+                  <div className="grid grid-cols-2 gap-1 rounded-xl border border-white/[0.08] bg-black/20 p-1">
+                    <button
+                      type="button"
+                      onClick={() => setRole("student")}
+                      className={`h-11 rounded-lg text-sm font-medium transition-all duration-300 ${
+                        role === "student"
+                          ? "bg-[#f4b942] text-black shadow-[0_0_20px_rgba(244,185,66,0.08)]"
+                          : "text-white/35 hover:bg-white/[0.03] hover:text-white"
+                      }`}
+                    >
+                      Student
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setRole("admin")}
-                    className={`py-2.5 text-sm font-medium transition ${
-                      role === "admin"
-                        ? "bg-white text-black"
-                        : "text-white/40 hover:text-white"
-                    }`}
-                  >
-                    Faculty
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setRole("admin")}
+                      className={`h-11 rounded-lg text-sm font-medium transition-all duration-300 ${
+                        role === "admin"
+                          ? "bg-[#f4b942] text-black shadow-[0_0_20px_rgba(244,185,66,0.08)]"
+                          : "text-white/35 hover:bg-white/[0.03] hover:text-white"
+                      }`}
+                    >
+                      Faculty
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="mb-5">
-                <label className="mb-2 block text-sm font-medium text-white/70">
-                  Email address
-                </label>
+                <div className="mb-5">
+                  <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-white/30">
+                    Email address
+                  </label>
 
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-[#f4b942]"
-                  required
-                />
-              </div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="h-12 w-full rounded-lg border border-white/[0.09] bg-black/20 px-4 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/15 focus:border-[#f4b942]/50 focus:bg-[#f4b942]/[0.015] focus:shadow-[0_0_22px_rgba(244,185,66,0.05)]"
+                    required
+                  />
+                </div>
 
-              <div className="mb-7">
-                <label className="mb-2 block text-sm font-medium text-white/70">
-                  Password
-                </label>
+                <div className="mb-7">
+                  <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-white/30">
+                    Password
+                  </label>
 
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-[#f4b942]"
-                  required
-                />
-              </div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    className="h-12 w-full rounded-lg border border-white/[0.09] bg-black/20 px-4 text-sm text-white outline-none transition-all duration-300 placeholder:text-white/15 focus:border-[#f4b942]/50 focus:bg-[#f4b942]/[0.015] focus:shadow-[0_0_22px_rgba(244,185,66,0.05)]"
+                    required
+                  />
+                </div>
 
-              <button
-                type="submit"
-                className="flex h-12 w-full items-center justify-center bg-[#f4b942] text-sm font-semibold text-black transition hover:bg-[#ffd166]"
-              >
-                Sign in
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  className="group relative flex h-12 w-full items-center justify-center overflow-hidden rounded-lg bg-[#f4b942] text-sm font-semibold text-black shadow-[0_0_25px_rgba(244,185,66,0.08)] transition-all duration-300 hover:bg-[#ffd166] hover:shadow-[0_0_32px_rgba(244,185,66,0.14)]"
+                >
+                  <span className="relative z-10">Sign in</span>
 
-            <p className="mt-8 text-center text-xs text-white/25">
-              Demo environment · {role === "student" ? "Student" : "Faculty"}{" "}
-              access
-            </p>
+                  <span className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-500 group-hover:translate-x-full" />
+                </button>
+              </form>
+            </div>
+
+            <div className="mt-6 flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.14em] text-white/15">
+              <span className="h-1 w-1 rounded-full bg-[#f4b942]" />
+              Demo environment
+              <span className="text-white/10">·</span>
+              {role === "student" ? "Student" : "Faculty"} access
+            </div>
           </div>
         </section>
       </div>
