@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useApp } from "../context/AppContext";
 
 function Login() {
-  const { login } = useApp();
+  const { login, allUsers } = useApp();
 
   const [role, setRole] = useState("student");
   const [email, setEmail] = useState("");
@@ -11,25 +11,14 @@ function Login() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    const demoUsers = {
-      student: {
-        id: 1,
-        name: "Aakash",
-        email: "aakash@example.com",
-        role: "student",
-      },
-      admin: {
-        id: 2,
-        name: "Professor Sarah",
-        email: "sarah@example.com",
-        role: "admin",
-      },
-    };
+    const user = allUsers.find(
+      (item) =>
+        item.email.toLowerCase() === email.trim().toLowerCase() &&
+        item.role === role
+    );
 
-    const user = demoUsers[role];
-
-    if (user.email !== email) {
-      alert("Invalid email");
+    if (!user) {
+      alert("Invalid email or account type");
       return;
     }
 
@@ -148,6 +137,7 @@ function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-[#f4b942]"
+                  required
                 />
               </div>
 
@@ -162,6 +152,7 @@ function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-[#f4b942]"
+                  required
                 />
               </div>
 

@@ -1,205 +1,209 @@
 import { useState } from "react";
+import { useApp } from "../context/AppContext";
 
-function AssignmentCard({ assignment, submitted, onSubmit }) {
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [justStamped, setJustStamped] = useState(false);
+function AssignmentCard({ assignment }) {
+  const {
+    currentUser,
+    getAssignmentStatus,
+    acknowledgeAssignment,
+    getStudentGroup,
+  } = useApp();
 
-  const handleConfirmation = () => {
-    onSubmit(assignment.id);
-    setShowConfirmation(false);
-    setJustStamped(true);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [justAcknowledged, setJustAcknowledged] = useState(false);
+
+  const status = getAssignmentStatus(assignment, currentUser.id);
+  const group = getStudentGroup(currentUser.id, assignment.courseId);
+
+  const handleAcknowledge = () => {
+    acknowledgeAssignment(assignment.id, currentUser.id);
+    setShowConfirm(false);
+    setJustAcknowledged(true);
 
     setTimeout(() => {
-      setJustStamped(false);
+      setJustAcknowledged(false);
     }, 1200);
   };
 
+  const formattedDate = new Date(assignment.dueDate).toLocaleDateString(
+    "en-IN",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }
+  );
+
+  const formattedTime = new Date(assignment.dueDate).toLocaleTimeString(
+    "en-IN",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+    }
+  );
+
   return (
     <>
-      <article className="group relative overflow-hidden border border-white/10 bg-[#101011] transition-all duration-700 hover:-translate-y-1 hover:border-white/20 hover:bg-[#131314] hover:shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
-        <div className="absolute left-0 top-0 h-full w-[2px] origin-bottom scale-y-0 bg-[#f4b942] transition-transform duration-700 ease-out group-hover:scale-y-100" />
+      <article className="group relative overflow-hidden border border-white/10 bg-white/[0.02] p-6 transition-all duration-500 hover:-translate-y-1 hover:border-white/[0.18] hover:bg-white/[0.035] sm:p-7">
+        <div
+          className={`absolute left-0 top-0 h-full w-[2px] origin-top bg-[#f4b942] transition-transform duration-500 ${
+            status.acknowledged
+              ? "scale-y-100"
+              : "scale-y-0 group-hover:scale-y-100"
+          }`}
+        />
 
-        <div className="p-6 sm:p-7">
-          <div className="flex items-start justify-between gap-5">
-            <div className="flex items-center gap-3">
-              <span className="text-[10px] font-medium tracking-[0.18em] text-white/20">
-                {String(assignment.id).padStart(2, "0")}
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-start">
+          <div className="max-w-3xl">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-white/25">
+                {assignment.submissionType === "group"
+                  ? "Group assignment"
+                  : "Individual assignment"}
               </span>
 
-              <span className="h-px w-7 bg-white/10 transition-all duration-500 group-hover:w-10 group-hover:bg-[#f4b942]/40" />
+              <span className="h-1 w-1 rounded-full bg-white/15" />
 
-              <span className="text-[10px] uppercase tracking-[0.16em] text-white/20">
-                Assignment
+              <span className="text-[10px] uppercase tracking-[0.14em] text-white/20">
+                Due {formattedDate}
               </span>
             </div>
 
-            <div
-              className={`flex items-center gap-2 text-[10px] font-medium uppercase tracking-[0.14em] transition-colors duration-500 ${
-                submitted ? "text-[#f4b942]" : "text-white/25"
-              }`}
-            >
-              <span
-                className={`h-1.5 w-1.5 rounded-full transition-all duration-500 ${
-                  submitted
-                    ? "bg-[#f4b942] shadow-[0_0_10px_rgba(244,185,66,0.5)]"
-                    : "bg-white/20"
-                }`}
-              />
-
-              {submitted ? "Submitted" : "Open"}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h3 className="text-2xl font-semibold tracking-[-0.045em] text-white transition-all duration-500 group-hover:translate-x-1 sm:text-[28px]">
+            <h3 className="mt-4 text-2xl font-semibold tracking-[-0.045em] text-white">
               {assignment.title}
             </h3>
 
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/30 transition-colors duration-500 group-hover:text-white/40">
+            <p className="mt-3 text-sm leading-7 text-white/35">
               {assignment.description}
             </p>
           </div>
 
-          <div className="mt-7 flex flex-col gap-5 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap items-center gap-4 text-xs">
-              <span className="text-white/25">
-                Due{" "}
-                <span className="ml-1 text-white/55">{assignment.dueDate}</span>
-              </span>
-
-              <span className="h-3 w-px bg-white/10" />
-
-              <a
-                href={assignment.driveLink}
-                target="_blank"
-                rel="noreferrer"
-                className="group/link flex items-center gap-2 text-white/35 transition-colors duration-300 hover:text-[#f4b942]"
-              >
-                Open folder
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  className="transition-transform duration-500 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5"
-                >
-                  <path
-                    d="M14 5h5v5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-
-                  <path
-                    d="M19 5l-9 9"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-
-                  <path
-                    d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
-            </div>
-
-            {!submitted && (
-              <button
-                type="button"
-                onClick={() => setShowConfirmation(true)}
-                className="group/submit flex items-center gap-3 self-start text-sm font-medium text-white/45 transition-all duration-500 hover:text-[#f4b942] sm:self-auto"
-              >
-                <span>Mark as submitted</span>
-
-                <span className="flex h-7 w-7 items-center justify-center border border-white/10 transition-all duration-500 group-hover/submit:border-[#f4b942]/40 group-hover/submit:bg-[#f4b942]/10 group-hover/submit:translate-x-1">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path d="M5 12h14" strokeLinecap="round" />
-
-                    <path
-                      d="M13 6l6 6-6 6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </button>
-            )}
-
-            {submitted && (
+          <div className="shrink-0">
+            {status.acknowledged ? (
               <div
-                className={`flex items-center gap-2 text-xs text-[#f4b942] ${
-                  justStamped ? "animate-pulse" : ""
+                className={`flex items-center gap-2 border border-[#f4b942]/20 bg-[#f4b942]/[0.05] px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-[#f4b942] transition-all duration-500 ${
+                  justAcknowledged ? "scale-105" : "scale-100"
                 }`}
               >
-                <span className="flex h-7 w-7 items-center justify-center bg-[#f4b942]/10">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      d="m5 12 4 4L19 6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                Submission recorded
+                <span className="text-sm">✓</span>
+                Acknowledged
+              </div>
+            ) : (
+              <div className="border border-white/10 px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.12em] text-white/25">
+                Pending
               </div>
             )}
           </div>
         </div>
-      </article>
 
-      {showConfirmation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-4 backdrop-blur-md">
-          <div className="w-full max-w-md animate-scale-in border border-white/10 bg-[#101011] p-7 shadow-2xl sm:p-8">
-            <div className="flex h-10 w-10 items-center justify-center bg-[#f4b942] text-sm font-bold text-black">
-              !
+        <div className="mt-7 border-t border-white/[0.07] pt-5">
+          {assignment.submissionType === "group" && group && (
+            <div className="mb-5 flex flex-col gap-2 border border-white/[0.07] bg-white/[0.015] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                  Your group
+                </p>
+
+                <p className="mt-1 text-sm font-medium text-white/65">
+                  {group.name}
+                </p>
+              </div>
+
+              <span className="text-[10px] uppercase tracking-[0.12em] text-white/20">
+                {status.isLeader ? "Group leader" : "Group member"}
+              </span>
+            </div>
+          )}
+
+          {assignment.submissionType === "group" && !group && (
+            <div className="border border-[#f4b942]/10 bg-[#f4b942]/[0.025] px-4 py-4">
+              <p className="text-sm font-medium text-white/65">
+                You are not part of any group.
+              </p>
+
+              <p className="mt-1 text-xs leading-5 text-white/30">
+                Form or join a group to submit this assignment.
+              </p>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/25">
+              <span>Due at {formattedTime}</span>
+
+              <span>
+                {assignment.submissionType === "group"
+                  ? "Group submission"
+                  : "Individual submission"}
+              </span>
             </div>
 
-            <p className="mt-6 text-[10px] font-medium uppercase tracking-[0.18em] text-[#f4b942]">
+            <div className="flex flex-wrap items-center gap-4">
+              <a
+                href={assignment.driveLink}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-medium text-white/35 transition-colors duration-300 hover:text-[#f4b942]"
+              >
+                Open OneDrive →
+              </a>
+
+              {!status.acknowledged &&
+                status.canAcknowledge &&
+                !status.noGroup && (
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm(true)}
+                    className="border border-[#f4b942]/20 bg-[#f4b942]/[0.05] px-4 py-2.5 text-xs font-medium text-[#f4b942] transition-all duration-300 hover:border-[#f4b942]/40 hover:bg-[#f4b942]/[0.1]"
+                  >
+                    Yes, I have submitted
+                  </button>
+                )}
+
+              {assignment.submissionType === "group" &&
+                group &&
+                !status.acknowledged &&
+                !status.isLeader && (
+                  <span className="text-xs text-white/25">
+                    Waiting for group leader
+                  </span>
+                )}
+            </div>
+          </div>
+        </div>
+      </article>
+
+      {showConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-5 backdrop-blur-md">
+          <div className="w-full max-w-md border border-white/10 bg-[#101011] p-7 shadow-2xl">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#f4b942]">
               Confirm submission
             </p>
 
-            <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
-              Mark as submitted?
+            <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-white">
+              Have you submitted this assignment?
             </h3>
 
-            <p className="mt-3 text-sm leading-7 text-white/30">
-              This will mark{" "}
-              <span className="text-white/65">{assignment.title}</span> as
-              submitted on your record.
+            <p className="mt-3 text-sm leading-6 text-white/35">
+              Confirm only after uploading your work through the provided
+              OneDrive link.
             </p>
 
-            <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
               <button
                 type="button"
-                onClick={() => setShowConfirmation(false)}
-                className="border border-white/10 px-5 py-2.5 text-sm text-white/40 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.03] hover:text-white"
+                onClick={() => setShowConfirm(false)}
+                className="border border-white/10 px-5 py-3 text-xs font-medium text-white/40 transition-colors duration-300 hover:text-white"
               >
-                Cancel
+                Not yet
               </button>
 
               <button
                 type="button"
-                onClick={handleConfirmation}
-                className="bg-[#f4b942] px-5 py-2.5 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#ffd166] hover:shadow-[0_0_30px_rgba(244,185,66,0.15)]"
+                onClick={handleAcknowledge}
+                className="bg-[#f4b942] px-5 py-3 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#ffd06a]"
               >
-                Confirm submission
+                Yes, confirm
               </button>
             </div>
           </div>

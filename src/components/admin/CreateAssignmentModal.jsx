@@ -4,7 +4,9 @@ const emptyForm = {
   title: "",
   description: "",
   dueDate: "",
+  dueTime: "",
   driveLink: "",
+  submissionType: "individual",
 };
 
 function CreateAssignmentModal({ onClose, onCreate }) {
@@ -25,8 +27,13 @@ function CreateAssignmentModal({ onClose, onCreate }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!form.title.trim() || !form.dueDate || !form.driveLink.trim()) {
-      setError("Title, due date, and a Drive link are required.");
+    if (
+      !form.title.trim() ||
+      !form.dueDate ||
+      !form.dueTime ||
+      !form.driveLink.trim()
+    ) {
+      setError("Title, deadline, time, and a OneDrive link are required.");
       return;
     }
 
@@ -34,7 +41,9 @@ function CreateAssignmentModal({ onClose, onCreate }) {
       title: form.title.trim(),
       description: form.description.trim(),
       dueDate: form.dueDate,
+      dueTime: form.dueTime,
       driveLink: form.driveLink.trim(),
+      submissionType: form.submissionType,
     });
 
     onClose();
@@ -100,7 +109,7 @@ function CreateAssignmentModal({ onClose, onCreate }) {
               value={form.title}
               onChange={handleChange("title")}
               placeholder="React Fundamentals"
-              className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition-all duration-500 placeholder:text-white/15 focus:border-[#f4b942]/40 focus:bg-white/[0.045] focus:shadow-[0_0_30px_rgba(244,185,66,0.04)]"
+              className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition-all duration-500 placeholder:text-white/15 focus:border-[#f4b942]/40 focus:bg-white/[0.045]"
             />
           </div>
 
@@ -114,7 +123,7 @@ function CreateAssignmentModal({ onClose, onCreate }) {
               onChange={handleChange("description")}
               rows={4}
               placeholder="What should students complete?"
-              className="w-full resize-none border border-white/10 bg-white/[0.025] px-4 py-3.5 text-sm leading-7 text-white outline-none transition-all duration-500 placeholder:text-white/15 focus:border-[#f4b942]/40 focus:bg-white/[0.045] focus:shadow-[0_0_30px_rgba(244,185,66,0.04)]"
+              className="w-full resize-none border border-white/10 bg-white/[0.025] px-4 py-3.5 text-sm leading-7 text-white outline-none transition-all duration-500 placeholder:text-white/15 focus:border-[#f4b942]/40 focus:bg-white/[0.045]"
             />
           </div>
 
@@ -134,16 +143,95 @@ function CreateAssignmentModal({ onClose, onCreate }) {
 
             <div>
               <label className="mb-2.5 block text-[9px] font-medium uppercase tracking-[0.18em] text-white/30">
-                Drive link
+                Due time
               </label>
 
               <input
-                type="url"
-                value={form.driveLink}
-                onChange={handleChange("driveLink")}
-                placeholder="https://drive.google.com/..."
-                className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition-all duration-500 placeholder:text-white/15 focus:border-[#f4b942]/40 focus:bg-white/[0.045]"
+                type="time"
+                value={form.dueTime}
+                onChange={handleChange("dueTime")}
+                className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition-all duration-500 focus:border-[#f4b942]/40 focus:bg-white/[0.045]"
               />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2.5 block text-[9px] font-medium uppercase tracking-[0.18em] text-white/30">
+              OneDrive link
+            </label>
+
+            <input
+              type="url"
+              value={form.driveLink}
+              onChange={handleChange("driveLink")}
+              placeholder="https://onedrive.live.com/..."
+              className="h-12 w-full border border-white/10 bg-white/[0.025] px-4 text-sm text-white outline-none transition-all duration-500 placeholder:text-white/15 focus:border-[#f4b942]/40 focus:bg-white/[0.045]"
+            />
+          </div>
+
+          <div>
+            <label className="mb-3 block text-[9px] font-medium uppercase tracking-[0.18em] text-white/30">
+              Submission type
+            </label>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((previous) => ({
+                    ...previous,
+                    submissionType: "individual",
+                  }))
+                }
+                className={`border px-4 py-4 text-left transition-all duration-300 ${
+                  form.submissionType === "individual"
+                    ? "border-[#f4b942]/50 bg-[#f4b942]/[0.06]"
+                    : "border-white/10 bg-white/[0.02] hover:border-white/20"
+                }`}
+              >
+                <p
+                  className={`text-sm font-medium ${
+                    form.submissionType === "individual"
+                      ? "text-[#f4b942]"
+                      : "text-white/70"
+                  }`}
+                >
+                  Individual
+                </p>
+
+                <p className="mt-1 text-xs leading-5 text-white/25">
+                  Every student submits separately
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((previous) => ({
+                    ...previous,
+                    submissionType: "group",
+                  }))
+                }
+                className={`border px-4 py-4 text-left transition-all duration-300 ${
+                  form.submissionType === "group"
+                    ? "border-[#f4b942]/50 bg-[#f4b942]/[0.06]"
+                    : "border-white/10 bg-white/[0.02] hover:border-white/20"
+                }`}
+              >
+                <p
+                  className={`text-sm font-medium ${
+                    form.submissionType === "group"
+                      ? "text-[#f4b942]"
+                      : "text-white/70"
+                  }`}
+                >
+                  Group
+                </p>
+
+                <p className="mt-1 text-xs leading-5 text-white/25">
+                  Group leader acknowledges
+                </p>
+              </button>
             </div>
           </div>
 
@@ -165,7 +253,7 @@ function CreateAssignmentModal({ onClose, onCreate }) {
 
           <button
             type="submit"
-            className="group flex h-11 items-center justify-center gap-3 bg-[#f4b942] px-6 text-sm font-semibold text-black transition-all duration-500 hover:bg-[#ffd166] hover:shadow-[0_10px_35px_rgba(244,185,66,0.14)]"
+            className="group flex h-11 items-center justify-center gap-3 bg-[#f4b942] px-6 text-sm font-semibold text-black transition-all duration-500 hover:bg-[#ffd166]"
           >
             Create assignment
             <svg
@@ -178,7 +266,6 @@ function CreateAssignmentModal({ onClose, onCreate }) {
               className="transition-transform duration-500 group-hover:translate-x-1"
             >
               <path d="M5 12h14" strokeLinecap="round" />
-
               <path
                 d="m13 6 6 6-6 6"
                 strokeLinecap="round"
