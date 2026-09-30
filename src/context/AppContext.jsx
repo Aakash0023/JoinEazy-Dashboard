@@ -108,8 +108,8 @@ export function AppProvider({ children }) {
         setCurrentUser(
           matchingSeedUser
             ? {
-                ...matchingSeedUser,
                 ...data.user,
+                ...matchingSeedUser,
               }
             : data.user
         );
@@ -164,8 +164,8 @@ export function AppProvider({ children }) {
 
     const authenticatedUser = matchingSeedUser
       ? {
-          ...matchingSeedUser,
           ...data.user,
+          ...matchingSeedUser,
         }
       : data.user;
 
@@ -201,8 +201,8 @@ export function AppProvider({ children }) {
 
     const authenticatedUser = matchingSeedUser
       ? {
-          ...matchingSeedUser,
           ...data.user,
+          ...matchingSeedUser,
         }
       : data.user;
 
