@@ -174,11 +174,11 @@ function StudentDashboard() {
               </p>
             </div>
 
-            <div className="mt-6 grid items-start gap-5 lg:grid-cols-2">
+            <div className="mt-6 grid gap-5 lg:grid-cols-2">
               {assignments.map((assignment, index) => (
                 <div
                   key={assignment.id}
-                  className="animate-fade-up"
+                  className="animate-fade-up h-full"
                   style={{
                     animationDelay: `${index * 0.08}s`,
                   }}

@@ -57,97 +57,133 @@ function AssignmentCard({ assignment }) {
 
   return (
     <>
-      <div className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h3 className="text-lg font-semibold text-slate-900">
-              {assignment.title}
-            </h3>
+      <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#101012] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.15] hover:bg-[#121214]">
+        <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-[#f4b942]/[0.035] blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
 
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              {assignment.description}
-            </p>
+        <div className="relative">
+          <div className="flex items-start justify-between gap-6">
+            <div className="min-w-0">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942]" />
+
+                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/25">
+                  {isGroupAssignment ? "Group assignment" : "Assignment"}
+                </span>
+              </div>
+
+              <h3 className="text-xl font-semibold tracking-[-0.035em] text-white">
+                {assignment.title}
+              </h3>
+
+              <p className="mt-2 max-w-xl text-sm leading-6 text-white/40">
+                {assignment.description}
+              </p>
+            </div>
+
+            <div className="shrink-0">
+              <StatusBadge status={statusLabel} />
+            </div>
           </div>
 
-          <div className="shrink-0">
-            <StatusBadge status={statusLabel} />
-          </div>
-        </div>
-
-        <div className="mt-5 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
-          <div>
-            <span className="font-medium text-slate-800">Due date:</span>{" "}
-            {formattedDate}
-          </div>
-
-          <div>
-            <span className="font-medium text-slate-800">Due time:</span>{" "}
-            {formattedTime}
-          </div>
-        </div>
-
-        <div className="mt-5 min-h-[112px] rounded-xl bg-slate-50 p-4">
-          {isGroupAssignment ? (
-            <>
-              <p className="text-sm font-semibold text-slate-800">
-                Group submission
+          <div className="mt-7 grid grid-cols-2 gap-4 border-y border-white/[0.06] py-4">
+            <div>
+              <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-white/20">
+                Due date
               </p>
 
-              {group ? (
-                <div className="mt-2 space-y-1">
-                  <p className="text-sm text-slate-600">
-                    Group:{" "}
-                    <span className="font-medium text-slate-900">
-                      {group.name}
-                    </span>
+              <p className="mt-1.5 text-sm font-medium text-white/65">
+                {formattedDate}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-white/20">
+                Due time
+              </p>
+
+              <p className="mt-1.5 text-sm font-medium text-white/65">
+                {formattedTime}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-4">
+            {isGroupAssignment ? (
+              <>
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/35">
+                    Group submission
                   </p>
 
-                  <p className="text-sm text-slate-600">
-                    Leader:{" "}
-                    <span className="font-medium text-slate-900">
-                      {groupLeader?.name || "Unknown"}
-                    </span>
-                  </p>
+                  <span className="text-[10px] font-medium text-white/20">
+                    TEAM
+                  </span>
                 </div>
-              ) : (
-                <p className="mt-2 text-sm text-slate-500">
-                  You are not assigned to a group for this course.
+
+                {group ? (
+                  <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-white/75">
+                        {group.name}
+                      </p>
+
+                      <p className="mt-0.5 text-xs text-white/30">
+                        Group workspace
+                      </p>
+                    </div>
+
+                    <div className="sm:text-right">
+                      <p className="text-[9px] uppercase tracking-[0.14em] text-white/20">
+                        Leader
+                      </p>
+
+                      <p className="mt-0.5 text-xs font-medium text-white/55">
+                        {groupLeader?.name || "Unknown"}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="mt-3 text-sm text-white/30">
+                    You are not assigned to a group for this course.
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/35">
+                  Individual submission
                 </p>
-              )}
-            </>
-          ) : (
-            <>
-              <p className="text-sm font-semibold text-slate-800">
-                Individual submission
-              </p>
 
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                Submit your completed work using the submission link below.
-              </p>
-            </>
-          )}
-        </div>
+                <p className="mt-2 text-sm leading-6 text-white/30">
+                  Submit your completed work using the submission link.
+                </p>
+              </>
+            )}
+          </div>
 
-        <div className="mt-auto pt-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <a
               href={assignment.driveLink}
               target="_blank"
               rel="noreferrer"
-              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              className="group/link inline-flex items-center gap-2 text-sm font-medium text-white/45 transition hover:text-white"
             >
               Open submission link
+              <span className="transition-transform duration-300 group-hover/link:translate-x-0.5">
+                ↗
+              </span>
             </a>
 
             {status.acknowledged ? (
-              <div className="flex h-[42px] items-center justify-center rounded-xl bg-green-50 px-4 text-sm font-semibold text-green-600">
+              <div className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-emerald-400/10 bg-emerald-400/[0.07] px-4 text-xs font-semibold text-emerald-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 Submission confirmed
               </div>
             ) : (
               <button
                 type="button"
                 onClick={() => setShowConfirm(true)}
-                className="h-[42px] rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
+                className="h-10 rounded-lg bg-[#f4b942] px-5 text-xs font-bold text-black shadow-[0_0_24px_rgba(244,185,66,0.08)] transition-all duration-300 hover:bg-[#ffd166] hover:shadow-[0_0_28px_rgba(244,185,66,0.14)]"
               >
                 Yes, I have submitted
               </button>
@@ -155,52 +191,60 @@ function AssignmentCard({ assignment }) {
           </div>
 
           {justAcknowledged && (
-            <div className="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
+            <div className="mt-4 rounded-lg border border-emerald-400/10 bg-emerald-400/[0.06] px-4 py-3 text-xs font-medium text-emerald-400">
               Your submission has been confirmed.
             </div>
           )}
 
           {status.overdue && !status.acknowledged && (
-            <div className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <div className="mt-4 rounded-lg border border-red-400/10 bg-red-400/[0.06] px-4 py-3 text-xs font-medium text-red-400">
               This assignment is past its deadline.
             </div>
           )}
         </div>
-      </div>
+      </article>
 
       {showConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h2 className="text-xl font-semibold text-slate-900">
-              Have you submitted this assignment?
-            </h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111113] p-6 shadow-2xl">
+            <div className="mb-6">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-[#f4b942]/20 bg-[#f4b942]/10 text-[#f4b942]">
+                ✓
+              </div>
 
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Please confirm that you have completed and submitted the
-              assignment using the submission link.
-            </p>
+              <h2 className="text-xl font-semibold tracking-[-0.025em] text-white">
+                Confirm submission
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-white/40">
+                Have you completed and submitted this assignment using the
+                submission link?
+              </p>
+            </div>
 
             {isGroupAssignment && group && (
-              <p className="mt-3 text-sm text-slate-600">
-                This will confirm the submission for{" "}
-                <span className="font-semibold text-slate-900">
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
+                <p className="text-[9px] uppercase tracking-[0.14em] text-white/20">
+                  Group
+                </p>
+
+                <p className="mt-1 text-sm font-medium text-white/70">
                   {group.name}
-                </span>
-                .
-              </p>
+                </p>
+              </div>
             )}
 
             {status.overdue && (
-              <p className="mt-3 text-sm font-medium text-red-600">
+              <p className="mt-4 text-xs font-medium text-red-400">
                 This assignment is already past its deadline.
               </p>
             )}
 
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="mt-7 flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setShowConfirm(false)}
-                className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded-lg border border-white/10 px-4 py-2.5 text-xs font-medium text-white/45 transition hover:bg-white/[0.04] hover:text-white"
               >
                 Not yet
               </button>
@@ -208,7 +252,7 @@ function AssignmentCard({ assignment }) {
               <button
                 type="button"
                 onClick={handleConfirm}
-                className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-800"
+                className="rounded-lg bg-[#f4b942] px-5 py-2.5 text-xs font-bold text-black transition hover:bg-[#ffd166]"
               >
                 Yes, confirm
               </button>
