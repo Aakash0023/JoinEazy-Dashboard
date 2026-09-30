@@ -8,8 +8,11 @@ import {
 
 const AppContext = createContext();
 
+const API_URL = "http://localhost:5000/api";
+
 const STORAGE_KEYS = {
   currentUser: "je_current_user",
+  token: "je_auth_token",
   assignments: "je_assignments",
   courses: "je_courses",
   groups: "je_groups",
@@ -29,6 +32,10 @@ export function AppProvider({ children }) {
     loadJSON(STORAGE_KEYS.currentUser, null)
   );
 
+  const [token, setToken] = useState(
+    () => localStorage.getItem(STORAGE_KEYS.token) || null
+  );
+
   const [assignments, setAssignments] = useState(() =>
     loadJSON(STORAGE_KEYS.assignments, seedAssignments)
   );
@@ -40,6 +47,8 @@ export function AppProvider({ children }) {
   const [groups, setGroups] = useState(() =>
     loadJSON(STORAGE_KEYS.groups, seedGroups)
   );
+
+  const [authLoading, setAuthLoading] = useState(Boolean(token));
 
   useEffect(() => {
     if (currentUser) {
@@ -53,6 +62,14 @@ export function AppProvider({ children }) {
   }, [currentUser]);
 
   useEffect(() => {
+    if (token) {
+      localStorage.setItem(STORAGE_KEYS.token, token);
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.token);
+    }
+  }, [token]);
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.assignments, JSON.stringify(assignments));
   }, [assignments]);
 
@@ -63,6 +80,49 @@ export function AppProvider({ children }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.groups, JSON.stringify(groups));
   }, [groups]);
+
+  useEffect(() => {
+    const restoreSession = async () => {
+      if (!token) {
+        setAuthLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Session expired");
+        }
+
+        const data = await response.json();
+
+        const matchingSeedUser = seedUsers.find(
+          (user) => user.email === data.user.email
+        );
+
+        setCurrentUser(
+          matchingSeedUser
+            ? {
+                ...matchingSeedUser,
+                ...data.user,
+              }
+            : data.user
+        );
+      } catch {
+        setCurrentUser(null);
+        setToken(null);
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    restoreSession();
+  }, [token]);
 
   const allUsers = useMemo(() => seedUsers, []);
 
@@ -76,12 +136,87 @@ export function AppProvider({ children }) {
     []
   );
 
-  const login = (user) => {
-    setCurrentUser(user);
+  const login = async (email, password, role) => {
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Login failed");
+    }
+
+    if (data.user.role !== role) {
+      throw new Error("Invalid account type");
+    }
+
+    const matchingSeedUser = seedUsers.find(
+      (user) => user.email === data.user.email
+    );
+
+    const authenticatedUser = matchingSeedUser
+      ? {
+          ...matchingSeedUser,
+          ...data.user,
+        }
+      : data.user;
+
+    setToken(data.token);
+    setCurrentUser(authenticatedUser);
+
+    return authenticatedUser;
+  };
+
+  const register = async (name, email, password, role) => {
+    const response = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        role,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Registration failed");
+    }
+
+    const matchingSeedUser = seedUsers.find(
+      (user) => user.email === data.user.email
+    );
+
+    const authenticatedUser = matchingSeedUser
+      ? {
+          ...matchingSeedUser,
+          ...data.user,
+        }
+      : data.user;
+
+    setToken(data.token);
+    setCurrentUser(authenticatedUser);
+
+    return authenticatedUser;
   };
 
   const logout = () => {
     setCurrentUser(null);
+    setToken(null);
+    localStorage.removeItem(STORAGE_KEYS.currentUser);
+    localStorage.removeItem(STORAGE_KEYS.token);
   };
 
   const addAssignment = (assignmentData) => {
@@ -324,15 +459,19 @@ export function AppProvider({ children }) {
     setCourses(seedCourses);
     setGroups(seedGroups);
     setCurrentUser(null);
+    setToken(null);
 
     localStorage.removeItem(STORAGE_KEYS.assignments);
     localStorage.removeItem(STORAGE_KEYS.courses);
     localStorage.removeItem(STORAGE_KEYS.groups);
     localStorage.removeItem(STORAGE_KEYS.currentUser);
+    localStorage.removeItem(STORAGE_KEYS.token);
   };
 
   const value = {
     currentUser,
+    token,
+    authLoading,
     allUsers,
     assignments,
     courses,
@@ -340,6 +479,7 @@ export function AppProvider({ children }) {
     students,
     admins,
     login,
+    register,
     logout,
     addAssignment,
     updateAssignment,
