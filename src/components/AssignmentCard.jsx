@@ -34,13 +34,12 @@ function AssignmentCard({ assignment }) {
     }
   );
 
-  const formattedTime = new Date(assignment.dueDate).toLocaleTimeString(
-    "en-IN",
-    {
-      hour: "2-digit",
-      minute: "2-digit",
-    }
-  );
+  const formattedTime = assignment.dueTime
+    ? new Date(`2000-01-01T${assignment.dueTime}`).toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "No time set";
 
   return (
     <>
