@@ -14,7 +14,6 @@ function AdminDashboard() {
     getCourseAssignments,
     getAssignmentAnalytics,
     addAssignment,
-    deleteAssignment,
   } = useApp();
 
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -157,7 +156,6 @@ function AdminDashboard() {
                     assignment={assignment}
                     analytics={analytics}
                     index={index}
-                    onDelete={deleteAssignment}
                   />
                 );
               })}

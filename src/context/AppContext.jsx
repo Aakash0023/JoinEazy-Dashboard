@@ -114,6 +114,12 @@ export function AppProvider({ children }) {
     );
   };
 
+  const deleteAssignment = (assignmentId) => {
+    setAssignments((prev) =>
+      prev.filter((assignment) => assignment.id !== assignmentId)
+    );
+  };
+
   const acknowledgeAssignment = (assignmentId, studentId) => {
     setAssignments((prev) =>
       prev.map((assignment) => {
@@ -282,6 +288,7 @@ export function AppProvider({ children }) {
     allUsers: seedUsers,
     addAssignment,
     updateAssignment,
+    deleteAssignment,
     acknowledgeAssignment,
     getCourseAssignments,
     getStudentCourses,
