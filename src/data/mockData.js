@@ -1,54 +1,127 @@
-// Mock "database" for the JoinEazy dashboard.
-// In a real app this would live behind an API — here it just seeds
-// localStorage on first run (see AppContext.jsx).
-
 export const users = [
-  { id: 1, name: "Aakash Kumar", email: "aakash@student.com", role: "student" },
-  { id: 2, name: "Priya Sharma", email: "priya@student.com", role: "student" },
-  { id: 3, name: "Rohan Verma", email: "rohan@student.com", role: "student" },
-  { id: 4, name: "Meera Iyer", email: "meera@student.com", role: "student" },
-  { id: 5, name: "Prof. Sarah Chen", email: "sarah@joineazy.com", role: "admin" },
-  { id: 6, name: "Prof. Arjun Nair", email: "arjun@joineazy.com", role: "admin" },
-];
+  {
+    id: 1,
+    name: "Aakash",
+    email: "aakash@example.com",
+    role: "student"
+  },
+  {
+    id: 2,
+    name: "Rahul",
+    email: "rahul@example.com",
+    role: "student"
+  },
+  {
+    id: 3,
+    name: "Priya",
+    email: "priya@example.com",
+    role: "student"
+  },
+  {
+    id: 4,
+    name: "Arjun",
+    email: "arjun@example.com",
+    role: "student"
+  },
+  {
+    id: 5,
+    name: "Professor Sarah",
+    email: "sarah@example.com",
+    role: "admin"
+  }
+]
+
+export const courses = [
+  {
+    id: 1,
+    name: "Web Development",
+    code: "CS301",
+    description: "Modern web development using React and JavaScript.",
+    professorId: 5,
+    studentIds: [1, 2, 3]
+  },
+  {
+    id: 2,
+    name: "Database Systems",
+    code: "CS305",
+    description: "Database design, SQL, normalization, and data modeling.",
+    professorId: 5,
+    studentIds: [1, 2, 4]
+  },
+  {
+    id: 3,
+    name: "Artificial Intelligence",
+    code: "AI401",
+    description: "Foundations of machine learning and artificial intelligence.",
+    professorId: 5,
+    studentIds: [1, 3, 4]
+  }
+]
+
+export const groups = [
+  {
+    id: 1,
+    courseId: 1,
+    name: "Team Alpha",
+    leaderId: 1,
+    memberIds: [1, 2]
+  },
+  {
+    id: 2,
+    courseId: 2,
+    name: "Database Ninjas",
+    leaderId: 2,
+    memberIds: [2, 4]
+  }
+]
 
 export const assignments = [
   {
-    id: 101,
-    title: "React Fundamentals",
-    description:
-      "Build a responsive React application using reusable, well-structured components.",
-    dueDate: "2026-09-28",
-    driveLink: "https://drive.google.com/",
-    createdBy: 5,
-    submissions: { 1: true, 2: true, 3: false, 4: false },
+    id: 1,
+    courseId: 1,
+    title: "React Dashboard",
+    description: "Build a responsive dashboard using React and reusable components.",
+    dueDate: "2026-10-05T23:59",
+    driveLink: "https://onedrive.live.com/",
+    submissionType: "individual",
+    acknowledgments: {
+      1: null,
+      2: null,
+      3: null
+    }
   },
   {
-    id: 102,
+    id: 2,
+    courseId: 1,
+    title: "Team Web Application",
+    description: "Build and submit a complete web application as a group.",
+    dueDate: "2026-10-10T23:59",
+    driveLink: "https://onedrive.live.com/",
+    submissionType: "group",
+    acknowledgments: {}
+  },
+  {
+    id: 3,
+    courseId: 2,
     title: "Database Design",
-    description:
-      "Design a relational database schema for a student management system, including ER diagrams.",
-    dueDate: "2026-09-30",
-    driveLink: "https://drive.google.com/",
-    createdBy: 5,
-    submissions: { 1: false, 2: true, 3: false, 4: true },
+    description: "Design a relational database schema for a student management system.",
+    dueDate: "2026-10-08T23:59",
+    driveLink: "https://onedrive.live.com/",
+    submissionType: "individual",
+    acknowledgments: {
+      1: null,
+      2: null,
+      4: null
+    }
   },
   {
-    id: 103,
-    title: "JavaScript Assessment",
-    description: "Complete the timed JavaScript programming assessment covering ES6+ features.",
-    dueDate: "2026-10-02",
-    driveLink: "https://drive.google.com/",
-    createdBy: 6,
-    submissions: { 1: true, 2: false, 3: false, 4: false },
-  },
-  {
-    id: 104,
-    title: "UI/UX Case Study",
-    description:
-      "Submit a short case study redesigning an existing product screen, with before/after notes.",
-    dueDate: "2026-10-08",
-    driveLink: "https://drive.google.com/",
-    createdBy: 6,
-    submissions: { 1: false, 2: false, 3: false, 4: false },
-  },
-];
+    id: 4,
+    courseId: 3,
+    title: "ML Classification Model",
+    description: "Build and evaluate a machine learning classification model.",
+    dueDate: "2026-10-15T23:59",
+    driveLink: "https://onedrive.live.com/",
+    submissionType: "group",
+    acknowledgments: {}
+  }
+]
