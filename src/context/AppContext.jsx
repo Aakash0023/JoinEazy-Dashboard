@@ -8,7 +8,7 @@ import {
 
 const AppContext = createContext();
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://joineazy-api.vercel.app/api";
 
 const STORAGE_KEYS = {
   currentUser: "je_current_user",
