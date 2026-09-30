@@ -64,6 +64,17 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
 
   const progress = analytics.percentage ?? analytics.progress ?? 0;
 
+  const submittedCount = analytics.submitted ?? 0;
+  const totalCount =
+    assignment.submissionType === "group"
+      ? courseGroups.length
+      : students.length;
+
+  const submissionLabel =
+    assignment.submissionType === "group"
+      ? `${submittedCount} / ${totalCount} groups submitted`
+      : `${submittedCount} / ${totalCount} students submitted`;
+
   return (
     <>
       <article
@@ -156,6 +167,12 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 {assignment.submissionType === "group"
                   ? `${courseGroups.length} groups`
                   : `${students.length} students`}
+              </span>
+
+              <span className="h-3 w-px bg-white/10" />
+
+              <span className="font-medium text-white/50">
+                {submissionLabel}
               </span>
             </div>
 

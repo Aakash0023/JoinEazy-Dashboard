@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import CreateAssignmentModal from "../components/admin/CreateAssignmentModal";
 import { useApp } from "../context/AppContext";
@@ -18,6 +18,8 @@ function AdminDashboard() {
 
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const professorCourses = getProfessorCourses(currentUser.id);
 
@@ -41,6 +43,27 @@ function AdminDashboard() {
     ? getCourseAssignments(selectedCourse.id)
     : [];
 
+  const filteredAssignments = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return courseAssignments.filter((assignment) => {
+      const analytics = getAssignmentAnalytics(assignment);
+
+      const matchesSearch =
+        !query ||
+        assignment.title.toLowerCase().includes(query) ||
+        assignment.description?.toLowerCase().includes(query);
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "submitted" && analytics.submitted > 0) ||
+        (statusFilter === "pending" && analytics.pending > 0) ||
+        (statusFilter === "overdue" && analytics.overdue > 0);
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [courseAssignments, searchQuery, statusFilter, getAssignmentAnalytics]);
+
   const courseGroups = selectedCourse
     ? groups.filter((group) => group.courseId === selectedCourse.id)
     : [];
@@ -54,13 +77,21 @@ function AdminDashboard() {
     setShowCreateModal(false);
   };
 
+  const resetAssignmentFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("all");
+  };
+
   if (selectedCourse) {
     return (
       <DashboardLayout role="admin">
         <div className="min-h-[calc(100vh-150px)]">
           <button
             type="button"
-            onClick={() => setSelectedCourse(null)}
+            onClick={() => {
+              setSelectedCourse(null);
+              resetAssignmentFilters();
+            }}
             className="group mb-10 flex items-center gap-2 text-xs font-medium text-white/30 transition-colors duration-300 hover:text-white"
           >
             <span className="transition-transform duration-300 group-hover:-translate-x-1">
@@ -141,16 +172,66 @@ function AdminDashboard() {
                 </h2>
 
                 <span className="text-xs text-white/25">
-                  {courseAssignments.length}{" "}
-                  {courseAssignments.length === 1
+                  {filteredAssignments.length}{" "}
+                  {filteredAssignments.length === 1
                     ? "assignment"
                     : "assignments"}
                 </span>
               </div>
             </div>
 
+            <div className="mt-6 grid gap-3 lg:grid-cols-[1fr_180px]">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search assignments..."
+                  className="h-12 w-full rounded-lg border border-white/10 bg-white/[0.025] px-4 pr-10 text-sm text-white outline-none placeholder:text-white/20 transition-all duration-300 focus:border-[#f4b942]/30 focus:bg-[#f4b942]/[0.025]"
+                />
+
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-white/25 transition-colors hover:bg-white/[0.05] hover:text-white"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              <select
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+                className="h-12 rounded-lg border border-white/10 bg-[#101012] px-4 text-sm text-white/60 outline-none transition-all duration-300 focus:border-[#f4b942]/30"
+              >
+                <option value="all">All status</option>
+                <option value="submitted">Submitted</option>
+                <option value="pending">Pending</option>
+                <option value="overdue">Overdue</option>
+              </select>
+            </div>
+
+            {(searchQuery || statusFilter !== "all") && (
+              <div className="mt-4 flex items-center justify-between gap-4">
+                <p className="text-xs text-white/25">
+                  Showing {filteredAssignments.length} of{" "}
+                  {courseAssignments.length} assignments
+                </p>
+
+                <button
+                  type="button"
+                  onClick={resetAssignmentFilters}
+                  className="text-xs font-medium text-[#f4b942]/70 transition-colors hover:text-[#f4b942]"
+                >
+                  Clear filters
+                </button>
+              </div>
+            )}
+
             <div className="mt-6 space-y-4">
-              {courseAssignments.map((assignment, index) => {
+              {filteredAssignments.map((assignment, index) => {
                 const analytics = getAssignmentAnalytics(assignment);
 
                 return (
@@ -162,6 +243,42 @@ function AdminDashboard() {
                   />
                 );
               })}
+
+              {!filteredAssignments.length && courseAssignments.length > 0 && (
+                <div className="glow-card glow-border rounded-xl border border-dashed border-white/10 bg-white/[0.01] px-6 py-16 text-center">
+                  <div className="relative z-10">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.025] text-[#f4b942]">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                      >
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m20 20-4-4" strokeLinecap="round" />
+                      </svg>
+                    </div>
+
+                    <h3 className="glow-heading mt-5 text-base font-medium text-white">
+                      No matching assignments
+                    </h3>
+
+                    <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-white/30">
+                      Try changing your search or submission status filter.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={resetAssignmentFilters}
+                      className="glow-accent mt-6 text-sm font-medium text-[#f4b942] transition-colors duration-300 hover:text-[#ffd166]"
+                    >
+                      Clear filters →
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {!courseAssignments.length && (
                 <div className="glow-card glow-border rounded-xl border border-dashed border-white/10 bg-white/[0.01] px-6 py-16 text-center">
