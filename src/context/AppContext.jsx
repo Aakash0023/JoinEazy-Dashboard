@@ -124,6 +124,36 @@ export function AppProvider({ children }) {
     restoreSession();
   }, [token]);
 
+  useEffect(() => {
+    const loadAssignments = async () => {
+      if (!token) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/assignments`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setAssignments(data.assignments);
+        }
+      } catch {
+        return;
+      }
+    };
+
+    loadAssignments();
+  }, [token]);
+
   const allUsers = useMemo(() => seedUsers, []);
 
   const students = useMemo(
@@ -322,51 +352,41 @@ export function AppProvider({ children }) {
     );
   };
 
-  const acknowledgeAssignment = (assignmentId, studentId = currentUser?.id) => {
-    if (!studentId) return;
+  const acknowledgeAssignment = async (
+    assignmentId,
+    studentId = currentUser?.id
+  ) => {
+    if (!token || !studentId) {
+      return;
+    }
+
+    const response = await fetch(
+      `${API_URL}/assignments/${assignmentId}/acknowledge`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          studentId,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to acknowledge assignment");
+    }
 
     setAssignments((prev) =>
-      prev.map((assignment) => {
-        if (assignment.id !== assignmentId) {
-          return assignment;
-        }
-
-        const submittedAt = new Date().toISOString();
-
-        if (assignment.submissionType === "group") {
-          const group = groups.find(
-            (item) =>
-              item.courseId === assignment.courseId &&
-              item.memberIds.includes(studentId)
-          );
-
-          if (!group || group.leaderId !== studentId) {
-            return assignment;
-          }
-
-          const updatedAcknowledgments = {
-            ...assignment.acknowledgments,
-          };
-
-          group.memberIds.forEach((memberId) => {
-            updatedAcknowledgments[memberId] = submittedAt;
-          });
-
-          return {
-            ...assignment,
-            acknowledgments: updatedAcknowledgments,
-          };
-        }
-
-        return {
-          ...assignment,
-          acknowledgments: {
-            ...assignment.acknowledgments,
-            [studentId]: submittedAt,
-          },
-        };
-      })
+      prev.map((assignment) =>
+        assignment.id === assignmentId ? data.assignment : assignment
+      )
     );
+
+    return data.assignment;
   };
 
   const getCourseAssignments = (courseId) => {
