@@ -143,7 +143,7 @@ export function AppProvider({ children }) {
 
         const data = await response.json();
 
-        if (data.success) {
+        if (data.success && Array.isArray(data.assignments)) {
           setAssignments(data.assignments);
         }
       } catch {
@@ -269,30 +269,9 @@ export function AppProvider({ children }) {
       throw new Error(data.message || "Failed to create assignment");
     }
 
-    const newAssignment = {
-      ...data.assignment,
-      acknowledgments: {},
-    };
+    setAssignments((prev) => [...prev, data.assignment]);
 
-    if (assignmentData.submissionType === "individual") {
-      const course = courses.find(
-        (item) => item.id === assignmentData.courseId
-      );
-
-      if (course) {
-        newAssignment.acknowledgments = course.studentIds.reduce(
-          (result, studentId) => {
-            result[studentId] = null;
-            return result;
-          },
-          {}
-        );
-      }
-    }
-
-    setAssignments((prev) => [...prev, newAssignment]);
-
-    return newAssignment;
+    return data.assignment;
   };
 
   const updateAssignment = async (assignmentId, updatedData) => {
@@ -317,12 +296,7 @@ export function AppProvider({ children }) {
 
     setAssignments((prev) =>
       prev.map((assignment) =>
-        assignment.id === assignmentId
-          ? {
-              ...assignment,
-              ...data.assignment,
-            }
-          : assignment
+        assignment.id === assignmentId ? data.assignment : assignment
       )
     );
 

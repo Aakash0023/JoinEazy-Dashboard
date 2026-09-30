@@ -6,6 +6,37 @@ const router = express.Router();
 
 router.use(authenticateToken);
 
+const studentIdsByEmail = {
+  "aakash@example.com": 1,
+  "rahul@example.com": 2,
+  "priya@example.com": 3,
+  "arjun@example.com": 4,
+};
+
+const groups = [
+  {
+    id: 1,
+    courseId: 1,
+    name: "Team Alpha",
+    leaderId: 1,
+    memberIds: [1, 2],
+  },
+  {
+    id: 2,
+    courseId: 2,
+    name: "Database Ninjas",
+    leaderId: 2,
+    memberIds: [2, 4],
+  },
+  {
+    id: 3,
+    courseId: 3,
+    name: "AI Innovators",
+    leaderId: 1,
+    memberIds: [1, 3, 4],
+  },
+];
+
 router.get("/", (req, res) => {
   const assignments = getAssignments();
 
@@ -120,6 +151,16 @@ router.put("/:id", (req, res) => {
       submissionType,
     } = req.body;
 
+    if (
+      submissionType !== undefined &&
+      !["individual", "group"].includes(submissionType)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid submission type",
+      });
+    }
+
     const updatedAssignment = {
       ...assignments[assignmentIndex],
       ...(courseId !== undefined && {
@@ -194,6 +235,95 @@ router.delete("/:id", (req, res) => {
     res.json({
       success: true,
       message: "Assignment deleted successfully",
+    });
+  } catch {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+});
+
+router.post("/:id/acknowledge", (req, res) => {
+  try {
+    if (req.user.role !== "student") {
+      return res.status(403).json({
+        success: false,
+        message: "Only students can acknowledge assignments",
+      });
+    }
+
+    const assignmentId = Number(req.params.id);
+    const studentId = studentIdsByEmail[req.user.email];
+
+    if (!studentId) {
+      return res.status(403).json({
+        success: false,
+        message: "Student is not part of the demo course data",
+      });
+    }
+
+    const assignments = getAssignments();
+
+    const assignmentIndex = assignments.findIndex(
+      (assignment) => assignment.id === assignmentId
+    );
+
+    if (assignmentIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "Assignment not found",
+      });
+    }
+
+    const assignment = assignments[assignmentIndex];
+    const submittedAt = new Date().toISOString();
+
+    if (assignment.submissionType === "individual") {
+      assignment.acknowledgments = {
+        ...(assignment.acknowledgments || {}),
+        [studentId]: submittedAt,
+      };
+    }
+
+    if (assignment.submissionType === "group") {
+      const studentGroup = groups.find(
+        (group) =>
+          group.courseId === Number(assignment.courseId) &&
+          group.memberIds.includes(studentId)
+      );
+
+      if (!studentGroup) {
+        return res.status(403).json({
+          success: false,
+          message:
+            "You are not part of any group. Form or join one to submit this assignment.",
+        });
+      }
+
+      if (studentGroup.leaderId !== studentId) {
+        return res.status(403).json({
+          success: false,
+          message: "Only the group leader can acknowledge this assignment",
+        });
+      }
+
+      assignment.acknowledgments = {
+        ...(assignment.acknowledgments || {}),
+      };
+
+      studentGroup.memberIds.forEach((memberId) => {
+        assignment.acknowledgments[memberId] = submittedAt;
+      });
+    }
+
+    assignments[assignmentIndex] = assignment;
+    saveAssignments(assignments);
+
+    res.json({
+      success: true,
+      message: "Assignment acknowledged successfully",
+      assignment,
     });
   } catch {
     res.status(500).json({

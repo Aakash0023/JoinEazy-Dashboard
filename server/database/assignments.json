@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": 1,
+    "courseId": 1,
+    "title": "React Dashboard",
+    "description": "Build a responsive dashboard using React and reusable components.",
+    "dueDate": "2026-10-05",
+    "dueTime": "23:59",
+    "driveLink": "https://onedrive.live.com/",
+    "submissionType": "individual",
+    "acknowledgments": {}
+  },
+  {
+    "id": 2,
+    "courseId": 1,
+    "title": "Team Web Application",
+    "description": "Build and submit a complete web application as a group.",
+    "dueDate": "2026-10-10",
+    "dueTime": "23:59",
+    "driveLink": "https://onedrive.live.com/",
+    "submissionType": "group",
+    "acknowledgments": {}
+  },
+  {
+    "id": 3,
+    "courseId": 2,
+    "title": "Database Design",
+    "description": "Design a relational database schema for a student management system.",
+    "dueDate": "2026-10-08",
+    "dueTime": "23:59",
+    "driveLink": "https://onedrive.live.com/",
+    "submissionType": "individual",
+    "acknowledgments": {}
+  },
+  {
+    "id": 4,
+    "courseId": 3,
+    "title": "ML Classification Model",
+    "description": "Build and evaluate a machine learning classification model.",
+    "dueDate": "2026-10-15",
+    "dueTime": "23:59",
+    "driveLink": "https://onedrive.live.com/",
+    "submissionType": "group",
+    "acknowledgments": {
+      "1": "2026-09-30T10:08:42.918Z",
+      "3": "2026-09-30T10:08:42.918Z",
+      "4": "2026-09-30T10:08:42.918Z"
+    }
+  }
+]

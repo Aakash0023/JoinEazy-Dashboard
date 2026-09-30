@@ -7,17 +7,17 @@
     "role": "student"
   },
   {
-    "id": 1790758398768,
-    "name": "Aakash",
-    "email": "aakash@example.com",
-    "password": "$2b$10$eBxc6GEOWUO/GwCcJcw7dOLN8IioyUdb324ffxFG8qYSAlPlieSNS",
-    "role": "student"
-  },
-  {
     "id": 1790758446075,
     "name": "sarah",
     "email": "sarah@example.com",
     "password": "$2b$10$be3kNTmyV49rNwRV0YtIt.KXswLFiwuXVeIAXzVMwWQX5ChfWnSBa",
     "role": "admin"
+  },
+  {
+    "id": 1790762457730,
+    "name": "Aakash",
+    "email": "aakash@example.com",
+    "password": "$2b$10$PF0JmlJLxLdrSyqGYNbFO.2wf0zIQfHfzfqMie6p59TBc/h2W0XAq",
+    "role": "student"
   }
 ]
