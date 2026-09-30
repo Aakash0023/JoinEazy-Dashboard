@@ -69,12 +69,18 @@ function AdminDashboard() {
             Back to courses
           </button>
 
-          <section className="border-b border-white/10 pb-10">
-            <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+          <section className="relative overflow-hidden border-b border-white/10 pb-10">
+            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[#f4b942]/[0.035] blur-3xl" />
+
+            <div className="relative flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.25em] text-[#f4b942]">
-                  {selectedCourse.code}
-                </p>
+                <div className="flex items-center gap-3">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942]" />
+
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]/80">
+                    {selectedCourse.code}
+                  </p>
+                </div>
 
                 <h1 className="mt-4 text-4xl font-semibold tracking-[-0.055em] text-white sm:text-6xl">
                   {selectedCourse.name}
@@ -88,7 +94,7 @@ function AdminDashboard() {
               <button
                 type="button"
                 onClick={() => setShowCreateModal(true)}
-                className="flex h-11 shrink-0 items-center justify-center gap-3 bg-[#f4b942] px-5 text-sm font-semibold text-black transition-all duration-300 hover:bg-[#ffd166]"
+                className="group flex h-11 shrink-0 items-center justify-center gap-3 rounded-lg bg-[#f4b942] px-5 text-sm font-semibold text-black shadow-[0_0_28px_rgba(244,185,66,0.06)] transition-all duration-300 hover:bg-[#ffd166] hover:shadow-[0_0_32px_rgba(244,185,66,0.12)]"
               >
                 <span>Create assignment</span>
 
@@ -107,8 +113,8 @@ function AdminDashboard() {
             </div>
           </section>
 
-          <section className="pt-12">
-            <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-3">
+          <section className="pt-10">
+            <div className="grid gap-px overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.08] sm:grid-cols-3">
               <CourseStat
                 label="Students"
                 value={selectedCourse.studentIds.length}
@@ -125,7 +131,7 @@ function AdminDashboard() {
 
           <section className="pb-20 pt-16">
             <div className="border-b border-white/10 pb-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-[#f4b942]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
                 Course management
               </p>
 
@@ -158,8 +164,8 @@ function AdminDashboard() {
               })}
 
               {!courseAssignments.length && (
-                <div className="border border-dashed border-white/10 bg-white/[0.01] px-6 py-16 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center border border-white/10 bg-white/[0.025] text-[#f4b942]">
+                <div className="rounded-xl border border-dashed border-white/10 bg-white/[0.01] px-6 py-16 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.025] text-[#f4b942]">
                     <svg
                       width="20"
                       height="20"
@@ -195,7 +201,7 @@ function AdminDashboard() {
 
           <section className="pb-20 pt-4">
             <div className="border-b border-white/10 pb-5">
-              <p className="text-xs uppercase tracking-[0.2em] text-[#f4b942]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
                 Classroom
               </p>
 
@@ -226,80 +232,88 @@ function AdminDashboard() {
                 return (
                   <div
                     key={group.id}
-                    className="border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/[0.18] hover:bg-white/[0.035]"
+                    className="group relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012] p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.15] hover:bg-[#121214]"
                   >
-                    <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.16em] text-[#f4b942]/70">
-                          Group
+                    <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full bg-[#f4b942]/[0.025] blur-3xl" />
+
+                    <div className="relative">
+                      <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942]" />
+
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/25">
+                              Group
+                            </p>
+                          </div>
+
+                          <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
+                            {group.name}
+                          </h3>
+                        </div>
+
+                        <span className="rounded-lg border border-white/[0.08] bg-white/[0.025] px-3 py-2 text-[10px] font-medium uppercase tracking-[0.12em] text-white/30">
+                          {members.length} members
+                        </span>
+                      </div>
+
+                      <div className="mt-6 border-t border-white/[0.07] pt-5">
+                        <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/20">
+                          Group leader
                         </p>
 
-                        <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
-                          {group.name}
-                        </h3>
-                      </div>
-
-                      <span className="border border-white/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-white/30">
-                        {members.length} members
-                      </span>
-                    </div>
-
-                    <div className="mt-6 border-t border-white/[0.07] pt-5">
-                      <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-                        Group leader
-                      </p>
-
-                      <div className="mt-3 flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center border border-[#f4b942]/20 bg-[#f4b942]/[0.04] text-xs font-semibold text-[#f4b942]">
-                          {leader?.name?.charAt(0) || "?"}
-                        </div>
-
-                        <div>
-                          <p className="text-sm font-medium text-white/70">
-                            {leader?.name || "Unknown"}
-                          </p>
-
-                          <p className="mt-1 text-xs text-white/25">
-                            {leader?.email || "No email available"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 border-t border-white/[0.07] pt-5">
-                      <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-                        Members
-                      </p>
-
-                      <div className="mt-3 space-y-3">
-                        {members.map((member) => (
-                          <div
-                            key={member.id}
-                            className="flex items-center justify-between gap-4 border border-white/[0.07] bg-white/[0.015] px-4 py-3"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="flex h-8 w-8 items-center justify-center border border-white/10 text-xs font-semibold text-white/50">
-                                {member.name.charAt(0)}
-                              </div>
-
-                              <div>
-                                <p className="text-sm text-white/60">
-                                  {member.name}
-                                </p>
-
-                                <p className="mt-0.5 text-[11px] text-white/20">
-                                  {member.email}
-                                </p>
-                              </div>
-                            </div>
-
-                            {member.id === group.leaderId && (
-                              <span className="text-[9px] uppercase tracking-[0.12em] text-[#f4b942]">
-                                Leader
-                              </span>
-                            )}
+                        <div className="mt-3 flex items-center gap-3">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#f4b942]/20 bg-[#f4b942]/[0.05] text-xs font-semibold text-[#f4b942]">
+                            {leader?.name?.charAt(0) || "?"}
                           </div>
-                        ))}
+
+                          <div>
+                            <p className="text-sm font-medium text-white/70">
+                              {leader?.name || "Unknown"}
+                            </p>
+
+                            <p className="mt-1 text-xs text-white/25">
+                              {leader?.email || "No email available"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 border-t border-white/[0.07] pt-5">
+                        <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-white/20">
+                          Members
+                        </p>
+
+                        <div className="mt-3 space-y-2">
+                          {members.map((member) => (
+                            <div
+                              key={member.id}
+                              className="flex items-center justify-between gap-4 rounded-lg border border-white/[0.06] bg-white/[0.015] px-4 py-3 transition-colors hover:bg-white/[0.03]"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 text-xs font-semibold text-white/50">
+                                  {member.name.charAt(0)}
+                                </div>
+
+                                <div>
+                                  <p className="text-sm text-white/60">
+                                    {member.name}
+                                  </p>
+
+                                  <p className="mt-0.5 text-[11px] text-white/20">
+                                    {member.email}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {member.id === group.leaderId && (
+                                <span className="rounded-full bg-[#f4b942]/[0.08] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[#f4b942]">
+                                  Leader
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -308,7 +322,7 @@ function AdminDashboard() {
             </div>
 
             {!courseGroups.length && (
-              <div className="border border-dashed border-white/10 px-6 py-16 text-center">
+              <div className="rounded-xl border border-dashed border-white/10 px-6 py-16 text-center">
                 <p className="text-sm text-white/30">
                   No groups have been created for this course yet.
                 </p>
@@ -330,11 +344,17 @@ function AdminDashboard() {
   return (
     <DashboardLayout role="admin">
       <div id="dashboard" className="scroll-mt-24">
-        <section className="flex min-h-[calc(100vh-150px)] flex-col justify-center border-b border-white/10 pb-16 pt-8">
-          <div className="max-w-5xl">
-            <p className="animate-fade-up text-xs font-medium uppercase tracking-[0.28em] text-[#f4b942]">
-              Faculty dashboard
-            </p>
+        <section className="relative flex min-h-[calc(100vh-150px)] flex-col justify-center overflow-hidden border-b border-white/10 pb-16 pt-8">
+          <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-[#f4b942]/[0.025] blur-3xl" />
+
+          <div className="relative max-w-5xl">
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#f4b942]" />
+
+              <p className="animate-fade-up text-[10px] font-semibold uppercase tracking-[0.28em] text-[#f4b942]">
+                Faculty dashboard
+              </p>
+            </div>
 
             <h1
               className="mt-5 animate-fade-up text-5xl font-semibold leading-[0.95] tracking-[-0.065em] text-white sm:text-6xl lg:text-8xl"
@@ -362,7 +382,7 @@ function AdminDashboard() {
           >
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-[#f4b942]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
                   Teaching
                 </p>
 
@@ -398,6 +418,10 @@ function AdminDashboard() {
                 ? Math.round((totalSubmissions / totalPossible) * 100)
                 : 0;
 
+              const courseGroups = groups.filter(
+                (group) => group.courseId === course.id
+              );
+
               return (
                 <button
                   key={course.id}
@@ -408,58 +432,66 @@ function AdminDashboard() {
                     animationDelay: `${0.4 + index * 0.1}s`,
                   }}
                 >
-                  <div className="relative h-full overflow-hidden border border-white/10 bg-white/[0.02] p-6 transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/[0.18] group-hover:bg-white/[0.035] sm:p-7">
+                  <div className="relative h-full overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012] p-6 transition-all duration-500 group-hover:-translate-y-1 group-hover:border-white/[0.15] group-hover:bg-[#121214] sm:p-7">
+                    <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-[#f4b942]/[0.035] blur-3xl opacity-60 transition-opacity duration-500 group-hover:opacity-100" />
+
                     <div className="absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[#f4b942] transition-transform duration-500 group-hover:scale-y-100" />
 
-                    <div className="flex items-start justify-between gap-5">
-                      <div>
-                        <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#f4b942]/70">
-                          {course.code}
-                        </p>
+                    <div className="relative">
+                      <div className="flex items-start justify-between gap-5">
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#f4b942]/70">
+                            {course.code}
+                          </p>
 
-                        <h3 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-white">
-                          {course.name}
-                        </h3>
+                          <h3 className="mt-3 text-2xl font-semibold tracking-[-0.045em] text-white">
+                            {course.name}
+                          </h3>
 
-                        <p className="mt-3 max-w-lg text-sm leading-6 text-white/30">
-                          {course.description}
-                        </p>
-                      </div>
+                          <p className="mt-3 max-w-lg text-sm leading-6 text-white/30">
+                            {course.description}
+                          </p>
+                        </div>
 
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/10 text-white/25 transition-all duration-500 group-hover:border-[#f4b942]/30 group-hover:text-[#f4b942]">
-                        →
-                      </span>
-                    </div>
-
-                    <div className="mt-8 border-t border-white/[0.07] pt-5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] uppercase tracking-[0.16em] text-white/25">
-                          Class overview
-                        </span>
-
-                        <span className="text-xs font-medium text-white/50">
-                          {completion}%
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 text-white/25 transition-all duration-500 group-hover:border-[#f4b942]/30 group-hover:bg-[#f4b942]/[0.05] group-hover:text-[#f4b942]">
+                          →
                         </span>
                       </div>
 
-                      <div className="mt-3 h-[2px] w-full overflow-hidden bg-white/[0.07]">
-                        <div
-                          className="h-full bg-[#f4b942] transition-all duration-700"
-                          style={{ width: `${completion}%` }}
-                        />
-                      </div>
+                      <div className="mt-8 border-t border-white/[0.07] pt-5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-white/25">
+                            Class overview
+                          </span>
 
-                      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] uppercase tracking-[0.12em] text-white/20">
-                        <span>{course.studentIds.length} students</span>
-                        <span>{courseAssignments.length} assignments</span>
-                        <span>
-                          {
-                            groups.filter(
-                              (group) => group.courseId === course.id
-                            ).length
-                          }{" "}
-                          groups
-                        </span>
+                          <span className="text-xs font-medium text-white/50">
+                            {completion}%
+                          </span>
+                        </div>
+
+                        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-white/[0.07]">
+                          <div
+                            className="h-full rounded-full bg-[#f4b942] transition-all duration-700"
+                            style={{ width: `${completion}%` }}
+                          />
+                        </div>
+
+                        <div className="mt-5 grid grid-cols-3 gap-3">
+                          <MiniStat
+                            label="Students"
+                            value={course.studentIds.length}
+                          />
+
+                          <MiniStat
+                            label="Assignments"
+                            value={courseAssignments.length}
+                          />
+
+                          <MiniStat
+                            label="Groups"
+                            value={courseGroups.length}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -469,7 +501,7 @@ function AdminDashboard() {
           </div>
 
           {!professorCourses.length && (
-            <div className="border border-dashed border-white/10 px-6 py-16 text-center">
+            <div className="rounded-xl border border-dashed border-white/10 px-6 py-16 text-center">
               <p className="text-sm text-white/30">
                 No courses have been assigned to you yet.
               </p>
@@ -482,7 +514,7 @@ function AdminDashboard() {
             className="animate-fade-up border-b border-white/10 pb-5"
             style={{ animationDelay: "0.8s" }}
           >
-            <p className="text-xs uppercase tracking-[0.2em] text-[#f4b942]">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f4b942]">
               Classroom
             </p>
 
@@ -495,18 +527,18 @@ function AdminDashboard() {
             </p>
           </div>
 
-          <div className="mt-5 overflow-hidden border border-white/10">
+          <div className="mt-5 overflow-hidden rounded-xl border border-white/[0.08] bg-[#101012]">
             {students.map((student, index) => (
               <div
                 key={student.id}
                 className={`group flex items-center justify-between gap-4 px-5 py-5 transition-colors duration-500 hover:bg-white/[0.025] sm:px-6 ${
                   index !== students.length - 1
-                    ? "border-b border-white/10"
+                    ? "border-b border-white/[0.07]"
                     : ""
                 }`}
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center border border-white/10 bg-white/[0.025] text-sm font-semibold text-white/60 transition-all duration-500 group-hover:border-[#f4b942]/30 group-hover:text-[#f4b942]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/[0.025] text-sm font-semibold text-white/60 transition-all duration-500 group-hover:border-[#f4b942]/30 group-hover:bg-[#f4b942]/[0.04] group-hover:text-[#f4b942]">
                     {student.name.charAt(0)}
                   </div>
 
@@ -521,7 +553,7 @@ function AdminDashboard() {
                   </div>
                 </div>
 
-                <span className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                <span className="rounded-full border border-white/[0.07] bg-white/[0.02] px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.15em] text-white/20">
                   Student
                 </span>
               </div>
@@ -536,7 +568,7 @@ function AdminDashboard() {
 function CourseStat({ label, value, accent = false }) {
   return (
     <div className="group bg-[#0b0b0c] px-6 py-7 transition-colors duration-500 hover:bg-white/[0.025] sm:px-7">
-      <p className="text-[10px] uppercase tracking-[0.18em] text-white/25">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/25">
         {label}
       </p>
 
@@ -547,6 +579,18 @@ function CourseStat({ label, value, accent = false }) {
       >
         {value}
       </p>
+    </div>
+  );
+}
+
+function MiniStat({ label, value }) {
+  return (
+    <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-3">
+      <p className="text-[8px] font-semibold uppercase tracking-[0.13em] text-white/20">
+        {label}
+      </p>
+
+      <p className="mt-1.5 text-sm font-semibold text-white/65">{value}</p>
     </div>
   );
 }
