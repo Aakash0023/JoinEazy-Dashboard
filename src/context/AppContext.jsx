@@ -219,10 +219,28 @@ export function AppProvider({ children }) {
     localStorage.removeItem(STORAGE_KEYS.token);
   };
 
-  const addAssignment = (assignmentData) => {
+  const addAssignment = async (assignmentData) => {
+    if (!token) {
+      throw new Error("Authentication required");
+    }
+
+    const response = await fetch(`${API_URL}/assignments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(assignmentData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to create assignment");
+    }
+
     const newAssignment = {
-      ...assignmentData,
-      id: Date.now(),
+      ...data.assignment,
       acknowledgments: {},
     };
 
@@ -243,19 +261,62 @@ export function AppProvider({ children }) {
     }
 
     setAssignments((prev) => [...prev, newAssignment]);
+
+    return newAssignment;
   };
 
-  const updateAssignment = (assignmentId, updatedData) => {
+  const updateAssignment = async (assignmentId, updatedData) => {
+    if (!token) {
+      throw new Error("Authentication required");
+    }
+
+    const response = await fetch(`${API_URL}/assignments/${assignmentId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to update assignment");
+    }
+
     setAssignments((prev) =>
       prev.map((assignment) =>
         assignment.id === assignmentId
-          ? { ...assignment, ...updatedData }
+          ? {
+              ...assignment,
+              ...data.assignment,
+            }
           : assignment
       )
     );
+
+    return data.assignment;
   };
 
-  const deleteAssignment = (assignmentId) => {
+  const deleteAssignment = async (assignmentId) => {
+    if (!token) {
+      throw new Error("Authentication required");
+    }
+
+    const response = await fetch(`${API_URL}/assignments/${assignmentId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete assignment");
+    }
+
     setAssignments((prev) =>
       prev.filter((assignment) => assignment.id !== assignmentId)
     );
