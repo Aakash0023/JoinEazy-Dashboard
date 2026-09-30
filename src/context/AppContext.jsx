@@ -154,6 +154,36 @@ export function AppProvider({ children }) {
     loadAssignments();
   }, [token]);
 
+  useEffect(() => {
+    const loadCourses = async () => {
+      if (!token) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/courses`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.success && Array.isArray(data.courses)) {
+          setCourses(data.courses);
+        }
+      } catch {
+        return;
+      }
+    };
+
+    loadCourses();
+  }, [token]);
+
   const allUsers = useMemo(() => seedUsers, []);
 
   const students = useMemo(
