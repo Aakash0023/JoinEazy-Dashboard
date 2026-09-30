@@ -22,8 +22,12 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`JoinEazy API running on http://localhost:${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`JoinEazy API running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
