@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 
 function Login() {
   const { login, register } = useApp();
+  const location = useLocation();
 
-  const [mode, setMode] = useState("login");
+  const [mode, setMode] = useState(
+    location.pathname === "/signup" ? "register" : "login"
+  );
   const [role, setRole] = useState("student");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setMode(location.pathname === "/signup" ? "register" : "login");
+    setError("");
+  }, [location.pathname]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

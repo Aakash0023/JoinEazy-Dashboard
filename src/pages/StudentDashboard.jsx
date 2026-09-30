@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import AssignmentCard from "../components/AssignmentCard";
 import ProgressBar from "../components/ProgressBar";
@@ -12,6 +13,7 @@ function StudentDashboard() {
     getAssignmentStatus,
   } = useApp();
 
+  const navigate = useNavigate();
   const [selectedCourseId, setSelectedCourseId] = useState(null);
 
   const courses = getStudentCourses(currentUser.id);
@@ -178,10 +180,11 @@ function StudentDashboard() {
               {assignments.map((assignment, index) => (
                 <div
                   key={assignment.id}
-                  className="animate-fade-up h-full"
+                  className="animate-fade-up h-full cursor-pointer"
                   style={{
                     animationDelay: `${index * 0.08}s`,
                   }}
+                  onClick={() => navigate(`/assignment/${assignment.id}`)}
                 >
                   <AssignmentCard assignment={assignment} />
                 </div>
