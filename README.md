@@ -1,64 +1,82 @@
 # JoinEazy Assignment Dashboard
 
-A responsive assignment management dashboard built for students and faculty to manage assignments, track submissions, and monitor academic progress.
+A responsive assignment and review dashboard designed for students and faculty to manage assignments, track submissions, and monitor academic progress.
 
 ## Overview
 
-JoinEazy provides separate workspaces for students and faculty.
+JoinEazy provides role-based workspaces for students and faculty with a focus on clear assignment workflows, submission tracking, and responsive UI.
 
-Students can:
-
-- View their assignments
-- Check due dates and submission links
-- Track overall completion
-- Confirm assignment submissions through a two-step verification flow
-- View their submission status
-
-Faculty can:
-
-- Create assignments
-- Add descriptions, due dates, and Google Drive links
-- View student submission progress
-- Track individual student submission status
-- Monitor overall assignment completion
-
-The application uses mock data and browser localStorage instead of a backend.
+The application is built as a frontend-focused implementation using React, Tailwind CSS, mock data, and browser localStorage.
 
 ## Features
 
-### Student Dashboard
+### Student Workspace
 
-- Assignment overview
-- Submission statistics
-- Overall progress tracking
-- Assignment status indicators
-- Google Drive submission links
-- Double-confirmation before marking an assignment as submitted
+- View enrolled courses
+- View assignments for each course
+- View assignment descriptions
+- View deadline date and time
+- Open external OneDrive submission links
+- View individual and group submission types
+- Confirm individual assignment submissions
+- Two-step submission confirmation
+- Group leader acknowledgment flow
+- Automatically reflect group acknowledgment across all members
+- View submission status
+- View overdue assignments
+- View overall assignment progress
 - Persistent submission state using localStorage
 - Responsive mobile navigation
 
-### Faculty Dashboard
+### Faculty Workspace
 
-- Assignment statistics
-- Create assignment workflow
-- Assignment-level submission progress
-- Individual student submission status
-- Student progress indicators
-- Expandable student lists
-- Google Drive links
+- View courses being taught
+- View course assignment information
+- Create assignments
+- Edit assignments
+- Delete assignments
+- Add assignment descriptions
+- Set deadline date and time
+- Add OneDrive submission links
+- Select Individual or Group submission type
+- View submitted student count
+- View pending student count
+- View overdue submissions
+- View assignment completion percentage
+- View individual student submission status
+- View group submission status
+- Expandable submission analytics
 - Responsive dashboard layout
 
-### UI & Interaction
+### Group Submission Flow
+
+Group assignments follow a leader-based acknowledgment workflow.
+
+- Only the group leader can acknowledge a group assignment
+- Once the leader confirms submission, all group members see the assignment as submitted
+- Group members who are not the leader see a waiting state
+- Students without a group receive a prompt to form or join one before submitting
+
+## UI & UX
+
+The interface uses a dark, minimal visual system with a warm amber accent.
+
+Key UI decisions include:
 
 - Dark dashboard interface
-- Warm yellow accent system
-- Responsive layout
-- Animated navigation interactions
-- Smooth section navigation
-- Active sidebar tracking
+- Consistent amber accent system
+- Responsive desktop and mobile layouts
+- Reusable assignment cards
+- Status badges
+- Progress indicators
+- Expandable analytics sections
+- Modal-based assignment workflows
 - Hover states and micro-interactions
-- Responsive modal dialogs
-- Mobile sidebar drawer
+- Mobile sidebar navigation
+- Submission confirmation feedback
+- Consistent spacing and typography system
+
+The design focuses on keeping assignment information easy to scan while separating student and faculty workflows clearly.
 
 ## Tech Stack
 
@@ -68,6 +86,7 @@ The application uses mock data and browser localStorage instead of a backend.
 - Tailwind CSS
 - HTML5
 - CSS3
+- React Context API
 - LocalStorage
 - Mock data
 
@@ -75,21 +94,61 @@ The application uses mock data and browser localStorage instead of a backend.
 
 The application follows a component-based React architecture.
 
-Application-level state is managed using React Context API through `AppContext`.
+Application-level state is managed through the React Context API using `AppContext`.
 
-The context handles:
+The context manages:
 
-- Current authenticated user
-- Assignment data
-- Student data
-- Faculty data
+- Current user
+- Authentication state
+- Courses
+- Students
+- Faculty
+- Groups
+- Assignments
 - Assignment creation
-- Submission status updates
+- Assignment editing
+- Assignment deletion
+- Submission acknowledgments
+- Assignment analytics
 - LocalStorage persistence
 
-The UI is divided into reusable components for navigation, layouts, assignments, progress indicators, and modal workflows.
+Reusable UI components are separated from page-level components to keep the application maintainable and easy to extend.
 
-## Folder Structure
+## State Management
+
+`AppContext` acts as the central state layer for the application.
+
+The context provides reusable actions and selectors such as:
+
+- `login()`
+- `logout()`
+- `addAssignment()`
+- `updateAssignment()`
+- `deleteAssignment()`
+- `acknowledgeAssignment()`
+- `getStudentCourses()`
+- `getProfessorCourses()`
+- `getCourseAssignments()`
+- `getStudentGroup()`
+- `getAssignmentStatus()`
+- `getAssignmentAnalytics()`
+
+## Data Persistence
+
+The project does not require a backend for the frontend demonstration.
+
+Mock data is provided through `src/data/mockData.js`.
+
+Application state is persisted in browser localStorage for:
+
+- Current user
+- Assignments
+- Courses
+- Groups
+
+This allows assignment changes and submission acknowledgments to remain available after refreshing the page.
+
+## Project Structure
 
 ```text
 src/
@@ -119,3 +178,4 @@ src/
 ├── App.jsx
 ├── index.css
 └── main.jsx
+```
