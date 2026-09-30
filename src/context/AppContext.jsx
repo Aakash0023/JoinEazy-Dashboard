@@ -77,6 +77,7 @@ export function AppProvider({ children }) {
     title,
     description,
     dueDate,
+    dueTime,
     driveLink,
     submissionType,
   }) => {
@@ -91,6 +92,7 @@ export function AppProvider({ children }) {
         title,
         description,
         dueDate,
+        dueTime,
         driveLink,
         submissionType,
         acknowledgments: {},

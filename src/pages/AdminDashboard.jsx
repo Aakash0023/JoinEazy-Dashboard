@@ -2,18 +2,19 @@ import { useState } from "react";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import CreateAssignmentModal from "../components/admin/CreateAssignmentModal";
 import { useApp } from "../context/AppContext";
+import AssignmentAdminCard from "../components/admin/AssignmentAdminCard";
 
 function AdminDashboard() {
   const {
     currentUser,
     courses,
     students,
-    assignments,
     groups,
     getProfessorCourses,
     getCourseAssignments,
     getAssignmentAnalytics,
     addAssignment,
+    deleteAssignment,
   } = useApp();
 
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -36,26 +37,6 @@ function AdminDashboard() {
       sum + groups.filter((group) => group.courseId === course.id).length,
     0
   );
-
-  const stats = [
-    {
-      label: "Courses",
-      value: professorCourses.length,
-    },
-    {
-      label: "Students",
-      value: totalStudents,
-    },
-    {
-      label: "Assignments",
-      value: totalAssignments,
-    },
-    {
-      label: "Groups",
-      value: totalGroups,
-      accent: true,
-    },
-  ];
 
   const courseAssignments = selectedCourse
     ? getCourseAssignments(selectedCourse.id)
@@ -171,11 +152,12 @@ function AdminDashboard() {
                 const analytics = getAssignmentAnalytics(assignment);
 
                 return (
-                  <AdminAssignmentCard
+                  <AssignmentAdminCard
                     key={assignment.id}
                     assignment={assignment}
                     analytics={analytics}
                     index={index}
+                    onDelete={deleteAssignment}
                   />
                 );
               })}
@@ -448,106 +430,6 @@ function CourseStat({ label, value, accent = false }) {
         {value}
       </p>
     </div>
-  );
-}
-
-function AdminAssignmentCard({ assignment, analytics, index }) {
-  return (
-    <article
-      className="group animate-fade-up border border-white/10 bg-white/[0.02] p-6 transition-all duration-500 hover:border-white/[0.18] hover:bg-white/[0.035] sm:p-7"
-      style={{
-        animationDelay: `${index * 0.08}s`,
-      }}
-    >
-      <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-start">
-        <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#f4b942]/70">
-              {assignment.submissionType === "group"
-                ? "Group assignment"
-                : "Individual assignment"}
-            </span>
-
-            <span className="h-1 w-1 rounded-full bg-white/15" />
-
-            <span className="text-[10px] uppercase tracking-[0.14em] text-white/20">
-              Due{" "}
-              {new Date(assignment.dueDate).toLocaleDateString("en-IN", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
-          </div>
-
-          <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-white">
-            {assignment.title}
-          </h3>
-
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/35">
-            {assignment.description}
-          </p>
-        </div>
-
-        <a
-          href={assignment.driveLink}
-          target="_blank"
-          rel="noreferrer"
-          className="shrink-0 text-xs font-medium text-white/35 transition-colors duration-300 hover:text-[#f4b942]"
-        >
-          Open OneDrive →
-        </a>
-      </div>
-
-      <div className="mt-7 grid gap-px overflow-hidden border border-white/[0.08] bg-white/[0.08] sm:grid-cols-3">
-        <div className="bg-[#0b0b0c] px-5 py-5">
-          <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-            Total
-          </p>
-
-          <p className="mt-2 text-2xl font-semibold text-white">
-            {analytics.total}
-          </p>
-        </div>
-
-        <div className="bg-[#0b0b0c] px-5 py-5">
-          <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-            Submitted
-          </p>
-
-          <p className="mt-2 text-2xl font-semibold text-[#f4b942]">
-            {analytics.submitted}
-          </p>
-        </div>
-
-        <div className="bg-[#0b0b0c] px-5 py-5">
-          <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-            Pending
-          </p>
-
-          <p className="mt-2 text-2xl font-semibold text-white">
-            {analytics.pending}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-5">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="text-[10px] uppercase tracking-[0.15em] text-white/20">
-            Completion
-          </span>
-
-          <span className="text-xs text-white/40">{analytics.progress}%</span>
-        </div>
-
-        <div className="h-[2px] w-full overflow-hidden bg-white/[0.07]">
-          <div
-            className="h-full bg-[#f4b942] transition-all duration-700"
-            style={{ width: `${analytics.progress}%` }}
-          />
-        </div>
-      </div>
-    </article>
   );
 }
 
