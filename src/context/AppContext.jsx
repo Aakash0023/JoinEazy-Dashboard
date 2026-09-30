@@ -144,20 +144,22 @@ export function AppProvider({ children }) {
               item.memberIds.includes(studentId)
           );
 
-          if (group) {
-            const updatedAcknowledgments = {
-              ...assignment.acknowledgments,
-            };
-
-            group.memberIds.forEach((memberId) => {
-              updatedAcknowledgments[memberId] = submittedAt;
-            });
-
-            return {
-              ...assignment,
-              acknowledgments: updatedAcknowledgments,
-            };
+          if (!group || group.leaderId !== studentId) {
+            return assignment;
           }
+
+          const updatedAcknowledgments = {
+            ...assignment.acknowledgments,
+          };
+
+          group.memberIds.forEach((memberId) => {
+            updatedAcknowledgments[memberId] = submittedAt;
+          });
+
+          return {
+            ...assignment,
+            acknowledgments: updatedAcknowledgments,
+          };
         }
 
         return {

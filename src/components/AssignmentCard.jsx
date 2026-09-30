@@ -23,6 +23,8 @@ function AssignmentCard({ assignment }) {
     : null;
 
   const isGroupAssignment = assignment.submissionType === "group";
+  const isGroupLeader =
+    isGroupAssignment && group?.leaderId === currentUser?.id;
 
   const handleConfirm = () => {
     acknowledgeAssignment(assignment.id, currentUser.id);
@@ -143,9 +145,12 @@ function AssignmentCard({ assignment }) {
                     </div>
                   </div>
                 ) : (
-                  <p className="mt-3 text-sm text-white/30">
-                    You are not assigned to a group for this course.
-                  </p>
+                  <div className="mt-3 rounded-lg border border-amber-400/10 bg-amber-400/[0.04] px-4 py-3">
+                    <p className="text-sm leading-6 text-amber-400/70">
+                      You are not part of any group. Form or join one to submit
+                      this assignment.
+                    </p>
+                  </div>
                 )}
               </>
             ) : (
@@ -179,7 +184,7 @@ function AssignmentCard({ assignment }) {
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 Submission confirmed
               </div>
-            ) : (
+            ) : !isGroupAssignment ? (
               <button
                 type="button"
                 onClick={() => setShowConfirm(true)}
@@ -187,6 +192,23 @@ function AssignmentCard({ assignment }) {
               >
                 Yes, I have submitted
               </button>
+            ) : !group ? (
+              <div className="inline-flex h-10 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.025] px-4 text-xs font-medium text-white/25">
+                Group required
+              </div>
+            ) : isGroupLeader ? (
+              <button
+                type="button"
+                onClick={() => setShowConfirm(true)}
+                className="h-10 rounded-lg bg-[#f4b942] px-5 text-xs font-bold text-black shadow-[0_0_24px_rgba(244,185,66,0.08)] transition-all duration-300 hover:bg-[#ffd166] hover:shadow-[0_0_28px_rgba(244,185,66,0.14)]"
+              >
+                Yes, I have submitted
+              </button>
+            ) : (
+              <div className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.025] px-4 text-xs font-medium text-white/35">
+                <span className="h-1.5 w-1.5 rounded-full bg-white/20" />
+                Waiting for group leader
+              </div>
             )}
           </div>
 
@@ -230,6 +252,11 @@ function AssignmentCard({ assignment }) {
 
                 <p className="mt-1 text-sm font-medium text-white/70">
                   {group.name}
+                </p>
+
+                <p className="mt-1 text-xs text-white/25">
+                  Acknowledging as group leader will confirm the submission for
+                  all group members.
                 </p>
               </div>
             )}
