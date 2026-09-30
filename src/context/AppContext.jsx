@@ -135,11 +135,36 @@ export function AppProvider({ children }) {
           return assignment;
         }
 
+        const submittedAt = new Date().toISOString();
+
+        if (assignment.submissionType === "group") {
+          const group = groups.find(
+            (item) =>
+              item.courseId === assignment.courseId &&
+              item.memberIds.includes(studentId)
+          );
+
+          if (group) {
+            const updatedAcknowledgments = {
+              ...assignment.acknowledgments,
+            };
+
+            group.memberIds.forEach((memberId) => {
+              updatedAcknowledgments[memberId] = submittedAt;
+            });
+
+            return {
+              ...assignment,
+              acknowledgments: updatedAcknowledgments,
+            };
+          }
+        }
+
         return {
           ...assignment,
           acknowledgments: {
             ...assignment.acknowledgments,
-            [studentId]: new Date().toISOString(),
+            [studentId]: submittedAt,
           },
         };
       })
@@ -166,7 +191,29 @@ export function AppProvider({ children }) {
   };
 
   const getAssignmentStatus = (assignment, studentId = currentUser?.id) => {
-    const acknowledged = Boolean(assignment.acknowledgments?.[studentId]);
+    if (!studentId) {
+      return {
+        acknowledged: false,
+        overdue: false,
+        status: "pending",
+      };
+    }
+
+    let acknowledged = Boolean(assignment.acknowledgments?.[studentId]);
+
+    if (assignment.submissionType === "group") {
+      const group = groups.find(
+        (item) =>
+          item.courseId === assignment.courseId &&
+          item.memberIds.includes(studentId)
+      );
+
+      if (group) {
+        acknowledged = group.memberIds.some((memberId) =>
+          Boolean(assignment.acknowledgments?.[memberId])
+        );
+      }
+    }
 
     const dueDateTime = new Date(
       `${assignment.dueDate}T${assignment.dueTime || "23:59"}`
@@ -233,8 +280,8 @@ export function AppProvider({ children }) {
         group.memberIds.includes(student.id)
       );
 
-      const submittedByMember = groupMembers.some(
-        (student) => assignment.acknowledgments?.[student.id]
+      const submittedByMember = groupMembers.some((student) =>
+        Boolean(assignment.acknowledgments?.[student.id])
       );
 
       const dueDateTime = new Date(

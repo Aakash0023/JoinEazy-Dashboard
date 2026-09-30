@@ -62,6 +62,8 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
     (group) => group.courseId === assignment.courseId
   );
 
+  const progress = analytics.percentage ?? analytics.progress ?? 0;
+
   return (
     <>
       <article
@@ -115,7 +117,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 </p>
 
                 <p className="mt-1 text-xl font-semibold text-[#f4b942]">
-                  {analytics.progress}%
+                  {progress}%
                 </p>
               </div>
 
@@ -184,7 +186,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
             </button>
           </div>
 
-          <div className="mt-5 grid gap-px overflow-hidden border border-white/[0.08] bg-white/[0.08] sm:grid-cols-3">
+          <div className="mt-5 grid gap-px overflow-hidden border border-white/[0.08] bg-white/[0.08] sm:grid-cols-4">
             <div className="bg-[#0b0b0c] px-5 py-5">
               <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
                 Total
@@ -200,7 +202,7 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 Submitted
               </p>
 
-              <p className="mt-2 text-2xl font-semibold text-[#f4b942]">
+              <p className="mt-2 text-2xl font-semibold text-green-400">
                 {analytics.submitted}
               </p>
             </div>
@@ -214,11 +216,21 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                 {analytics.pending}
               </p>
             </div>
+
+            <div className="bg-[#0b0b0c] px-5 py-5">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                Overdue
+              </p>
+
+              <p className="mt-2 text-2xl font-semibold text-red-400">
+                {analytics.overdue}
+              </p>
+            </div>
           </div>
 
           <div className="mt-5">
             <ProgressBar
-              value={analytics.progress}
+              value={progress}
               showPercent={false}
               size="sm"
               colorClass="bg-[#f4b942]"
@@ -229,9 +241,25 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
             <div className="mt-5 overflow-hidden border border-white/10">
               {assignment.submissionType === "individual" &&
                 students.map((student, studentIndex) => {
-                  const submitted = Boolean(
-                    assignment.acknowledgments?.[student.id]
-                  );
+                  const studentStatus =
+                    analytics.students?.find(
+                      (item) => item.student.id === student.id
+                    ) || {};
+
+                  const submitted = studentStatus.acknowledged;
+                  const overdue = studentStatus.overdue;
+
+                  const statusLabel = submitted
+                    ? "Submitted"
+                    : overdue
+                    ? "Overdue"
+                    : "Pending";
+
+                  const statusClass = submitted
+                    ? "text-green-400"
+                    : overdue
+                    ? "text-red-400"
+                    : "text-white/25";
 
                   return (
                     <div
@@ -264,16 +292,20 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                             value={submitted ? 100 : 0}
                             showPercent={false}
                             size="sm"
-                            colorClass="bg-[#f4b942]"
+                            colorClass={
+                              submitted
+                                ? "bg-green-400"
+                                : overdue
+                                ? "bg-red-400"
+                                : "bg-white/15"
+                            }
                           />
                         </div>
 
                         <span
-                          className={`min-w-[72px] text-right text-[11px] font-medium uppercase tracking-[0.1em] ${
-                            submitted ? "text-[#f4b942]" : "text-white/25"
-                          }`}
+                          className={`min-w-[72px] text-right text-[11px] font-medium uppercase tracking-[0.1em] ${statusClass}`}
                         >
-                          {submitted ? "Submitted" : "Pending"}
+                          {statusLabel}
                         </span>
                       </div>
                     </div>
@@ -282,9 +314,25 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
 
               {assignment.submissionType === "group" &&
                 courseGroups.map((group, groupIndex) => {
-                  const submitted = group.memberIds.some(
-                    (memberId) => assignment.acknowledgments?.[memberId]
-                  );
+                  const groupStatus =
+                    analytics.groups?.find(
+                      (item) => item.group.id === group.id
+                    ) || {};
+
+                  const submitted = groupStatus.submitted;
+                  const overdue = groupStatus.overdue;
+
+                  const statusLabel = submitted
+                    ? "Submitted"
+                    : overdue
+                    ? "Overdue"
+                    : "Pending";
+
+                  const statusClass = submitted
+                    ? "text-green-400"
+                    : overdue
+                    ? "text-red-400"
+                    : "text-white/25";
 
                   return (
                     <div
@@ -309,11 +357,9 @@ function AssignmentAdminCard({ assignment, analytics, index }) {
                       </div>
 
                       <span
-                        className={`text-[11px] font-medium uppercase tracking-[0.1em] ${
-                          submitted ? "text-[#f4b942]" : "text-white/25"
-                        }`}
+                        className={`text-[11px] font-medium uppercase tracking-[0.1em] ${statusClass}`}
                       >
-                        {submitted ? "Submitted" : "Pending"}
+                        {statusLabel}
                       </span>
                     </div>
                   );

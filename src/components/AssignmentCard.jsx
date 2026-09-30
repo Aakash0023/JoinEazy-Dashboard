@@ -5,6 +5,7 @@ import StatusBadge from "./StatusBadge";
 function AssignmentCard({ assignment }) {
   const {
     currentUser,
+    students,
     getAssignmentStatus,
     acknowledgeAssignment,
     getStudentGroup,
@@ -17,8 +18,11 @@ function AssignmentCard({ assignment }) {
 
   const group = getStudentGroup(assignment.courseId, currentUser?.id);
 
+  const groupLeader = group
+    ? students.find((student) => student.id === group.leaderId)
+    : null;
+
   const isGroupAssignment = assignment.submissionType === "group";
-  const isGroupLeader = group?.leaderId === currentUser?.id;
 
   const handleConfirm = () => {
     acknowledgeAssignment(assignment.id, currentUser.id);
@@ -53,9 +57,9 @@ function AssignmentCard({ assignment }) {
 
   return (
     <>
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
+      <div className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
             <h3 className="text-lg font-semibold text-slate-900">
               {assignment.title}
             </h3>
@@ -65,7 +69,9 @@ function AssignmentCard({ assignment }) {
             </p>
           </div>
 
-          <StatusBadge status={statusLabel} />
+          <div className="shrink-0">
+            <StatusBadge status={statusLabel} />
+          </div>
         </div>
 
         <div className="mt-5 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
@@ -80,84 +86,86 @@ function AssignmentCard({ assignment }) {
           </div>
         </div>
 
-        {isGroupAssignment && (
-          <div className="mt-5 rounded-xl bg-slate-50 p-4">
-            <p className="text-sm font-semibold text-slate-800">
-              Group submission
-            </p>
-
-            {group ? (
-              <div className="mt-2">
-                <p className="text-sm text-slate-600">
-                  Group:{" "}
-                  <span className="font-medium text-slate-900">
-                    {group.name}
-                  </span>
-                </p>
-
-                <p className="mt-1 text-sm text-slate-600">
-                  Leader:{" "}
-                  <span className="font-medium text-slate-900">
-                    {group.leaderId === currentUser?.id
-                      ? currentUser.name
-                      : "Group leader"}
-                  </span>
-                </p>
-
-                {!isGroupLeader && !status.acknowledged && (
-                  <p className="mt-3 text-xs text-slate-500">
-                    Waiting for your group leader to submit.
-                  </p>
-                )}
-              </div>
-            ) : (
-              <p className="mt-2 text-sm text-slate-500">
-                You are not assigned to a group for this course.
+        <div className="mt-5 min-h-[112px] rounded-xl bg-slate-50 p-4">
+          {isGroupAssignment ? (
+            <>
+              <p className="text-sm font-semibold text-slate-800">
+                Group submission
               </p>
-            )}
-          </div>
-        )}
 
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <a
-            href={assignment.driveLink}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm font-medium text-blue-600 hover:text-blue-700"
-          >
-            Open submission link
-          </a>
+              {group ? (
+                <div className="mt-2 space-y-1">
+                  <p className="text-sm text-slate-600">
+                    Group:{" "}
+                    <span className="font-medium text-slate-900">
+                      {group.name}
+                    </span>
+                  </p>
 
-          {isGroupAssignment && !isGroupLeader ? (
-            <div className="text-sm font-medium text-slate-500">
-              Waiting for group leader
-            </div>
-          ) : status.acknowledged ? (
-            <div className="text-sm font-semibold text-green-600">
-              Submission confirmed
-            </div>
+                  <p className="text-sm text-slate-600">
+                    Leader:{" "}
+                    <span className="font-medium text-slate-900">
+                      {groupLeader?.name || "Unknown"}
+                    </span>
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-2 text-sm text-slate-500">
+                  You are not assigned to a group for this course.
+                </p>
+              )}
+            </>
           ) : (
-            <button
-              type="button"
-              onClick={() => setShowConfirm(true)}
-              className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-            >
-              Yes, I have submitted
-            </button>
+            <>
+              <p className="text-sm font-semibold text-slate-800">
+                Individual submission
+              </p>
+
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Submit your completed work using the submission link below.
+              </p>
+            </>
           )}
         </div>
 
-        {justAcknowledged && (
-          <div className="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
-            Your submission has been confirmed.
-          </div>
-        )}
+        <div className="mt-auto pt-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <a
+              href={assignment.driveLink}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              Open submission link
+            </a>
 
-        {status.overdue && !status.acknowledged && (
-          <div className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-            This assignment is past its deadline.
+            {status.acknowledged ? (
+              <div className="flex h-[42px] items-center justify-center rounded-xl bg-green-50 px-4 text-sm font-semibold text-green-600">
+                Submission confirmed
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowConfirm(true)}
+                className="h-[42px] rounded-xl bg-slate-900 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
+              >
+                Yes, I have submitted
+              </button>
+            )}
           </div>
-        )}
+
+          {justAcknowledged && (
+            <div className="mt-4 rounded-xl bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
+              Your submission has been confirmed.
+            </div>
+          )}
+
+          {status.overdue && !status.acknowledged && (
+            <div className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+              This assignment is past its deadline.
+            </div>
+          )}
+        </div>
       </div>
 
       {showConfirm && (
@@ -171,6 +179,16 @@ function AssignmentCard({ assignment }) {
               Please confirm that you have completed and submitted the
               assignment using the submission link.
             </p>
+
+            {isGroupAssignment && group && (
+              <p className="mt-3 text-sm text-slate-600">
+                This will confirm the submission for{" "}
+                <span className="font-semibold text-slate-900">
+                  {group.name}
+                </span>
+                .
+              </p>
+            )}
 
             {status.overdue && (
               <p className="mt-3 text-sm font-medium text-red-600">

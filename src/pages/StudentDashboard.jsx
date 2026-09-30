@@ -36,20 +36,30 @@ function StudentDashboard() {
   const getCourseStats = (courseId) => {
     const courseAssignments = getCourseAssignments(courseId);
 
-    const completed = courseAssignments.filter((assignment) => {
-      return getAssignmentStatus(assignment, currentUser.id).acknowledged;
-    }).length;
+    const statuses = courseAssignments.map((assignment) =>
+      getAssignmentStatus(assignment, currentUser.id)
+    );
+
+    const completed = statuses.filter((status) => status.acknowledged).length;
+
+    const overdue = statuses.filter((status) => status.overdue).length;
+
+    const pending = statuses.filter(
+      (status) => !status.acknowledged && !status.overdue
+    ).length;
 
     return {
       total: courseAssignments.length,
       completed,
-      pending: courseAssignments.length - completed,
+      pending,
+      overdue,
     };
   };
 
   if (selectedCourse) {
     const assignments = getCourseAssignments(selectedCourse.id);
     const progress = getCourseProgress(selectedCourse.id);
+    const stats = getCourseStats(selectedCourse.id);
 
     return (
       <DashboardLayout role="student">
@@ -93,6 +103,59 @@ function StudentDashboard() {
             </div>
           </section>
 
+          <section className="pt-10">
+            <div className="grid gap-px overflow-hidden border border-white/[0.08] bg-white/[0.08] sm:grid-cols-2 lg:grid-cols-4">
+              <div className="bg-[#0b0b0c] px-5 py-5">
+                <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                  Total
+                </p>
+
+                <p className="mt-2 text-2xl font-semibold text-white">
+                  {stats.total}
+                </p>
+              </div>
+
+              <div className="bg-[#0b0b0c] px-5 py-5">
+                <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                  Submitted
+                </p>
+
+                <p className="mt-2 text-2xl font-semibold text-green-400">
+                  {stats.completed}
+                </p>
+              </div>
+
+              <div className="bg-[#0b0b0c] px-5 py-5">
+                <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                  Pending
+                </p>
+
+                <p className="mt-2 text-2xl font-semibold text-white">
+                  {stats.pending}
+                </p>
+              </div>
+
+              <div className="bg-[#0b0b0c] px-5 py-5">
+                <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                  Overdue
+                </p>
+
+                <p className="mt-2 text-2xl font-semibold text-red-400">
+                  {stats.overdue}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <ProgressBar
+                value={progress}
+                showPercent={false}
+                size="sm"
+                colorClass="bg-[#f4b942]"
+              />
+            </div>
+          </section>
+
           <section className="pt-12">
             <div className="flex items-end justify-between border-b border-white/10 pb-5">
               <div>
@@ -111,7 +174,7 @@ function StudentDashboard() {
               </p>
             </div>
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-6 grid items-start gap-5 lg:grid-cols-2">
               {assignments.map((assignment, index) => (
                 <div
                   key={assignment.id}
@@ -125,7 +188,7 @@ function StudentDashboard() {
               ))}
 
               {!assignments.length && (
-                <div className="border border-dashed border-white/10 px-6 py-16 text-center">
+                <div className="border border-dashed border-white/10 px-6 py-16 text-center lg:col-span-2">
                   <p className="text-sm text-white/30">
                     No assignments have been added for this course yet.
                   </p>
@@ -248,6 +311,12 @@ function StudentDashboard() {
                         <span>{stats.total} assignments</span>
                         <span>{stats.completed} completed</span>
                         <span>{stats.pending} pending</span>
+
+                        {stats.overdue > 0 && (
+                          <span className="text-red-400/70">
+                            {stats.overdue} overdue
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
