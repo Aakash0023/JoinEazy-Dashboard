@@ -41,6 +41,10 @@ function AdminDashboard() {
     ? getCourseAssignments(selectedCourse.id)
     : [];
 
+  const courseGroups = selectedCourse
+    ? groups.filter((group) => group.courseId === selectedCourse.id)
+    : [];
+
   const handleCreateAssignment = (data) => {
     addAssignment({
       ...data,
@@ -115,14 +119,7 @@ function AdminDashboard() {
                 value={courseAssignments.length}
               />
 
-              <CourseStat
-                label="Groups"
-                value={
-                  groups.filter((group) => group.courseId === selectedCourse.id)
-                    .length
-                }
-                accent
-              />
+              <CourseStat label="Groups" value={courseGroups.length} accent />
             </div>
           </section>
 
@@ -194,6 +191,129 @@ function AdminDashboard() {
                 </div>
               )}
             </div>
+          </section>
+
+          <section className="pb-20 pt-4">
+            <div className="border-b border-white/10 pb-5">
+              <p className="text-xs uppercase tracking-[0.2em] text-[#f4b942]">
+                Classroom
+              </p>
+
+              <div className="mt-3 flex items-end justify-between gap-4">
+                <h2 className="text-3xl font-semibold tracking-[-0.05em] text-white sm:text-4xl">
+                  Groups
+                </h2>
+
+                <span className="text-xs text-white/25">
+                  {courseGroups.length}{" "}
+                  {courseGroups.length === 1 ? "group" : "groups"}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+              {courseGroups.map((group) => {
+                const members = group.memberIds
+                  .map((memberId) =>
+                    students.find((student) => student.id === memberId)
+                  )
+                  .filter(Boolean);
+
+                const leader = students.find(
+                  (student) => student.id === group.leaderId
+                );
+
+                return (
+                  <div
+                    key={group.id}
+                    className="border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/[0.18] hover:bg-white/[0.035]"
+                  >
+                    <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.16em] text-[#f4b942]/70">
+                          Group
+                        </p>
+
+                        <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">
+                          {group.name}
+                        </h3>
+                      </div>
+
+                      <span className="border border-white/10 px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-white/30">
+                        {members.length} members
+                      </span>
+                    </div>
+
+                    <div className="mt-6 border-t border-white/[0.07] pt-5">
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                        Group leader
+                      </p>
+
+                      <div className="mt-3 flex items-center gap-3">
+                        <div className="flex h-9 w-9 items-center justify-center border border-[#f4b942]/20 bg-[#f4b942]/[0.04] text-xs font-semibold text-[#f4b942]">
+                          {leader?.name?.charAt(0) || "?"}
+                        </div>
+
+                        <div>
+                          <p className="text-sm font-medium text-white/70">
+                            {leader?.name || "Unknown"}
+                          </p>
+
+                          <p className="mt-1 text-xs text-white/25">
+                            {leader?.email || "No email available"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 border-t border-white/[0.07] pt-5">
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-white/20">
+                        Members
+                      </p>
+
+                      <div className="mt-3 space-y-3">
+                        {members.map((member) => (
+                          <div
+                            key={member.id}
+                            className="flex items-center justify-between gap-4 border border-white/[0.07] bg-white/[0.015] px-4 py-3"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-8 w-8 items-center justify-center border border-white/10 text-xs font-semibold text-white/50">
+                                {member.name.charAt(0)}
+                              </div>
+
+                              <div>
+                                <p className="text-sm text-white/60">
+                                  {member.name}
+                                </p>
+
+                                <p className="mt-0.5 text-[11px] text-white/20">
+                                  {member.email}
+                                </p>
+                              </div>
+                            </div>
+
+                            {member.id === group.leaderId && (
+                              <span className="text-[9px] uppercase tracking-[0.12em] text-[#f4b942]">
+                                Leader
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {!courseGroups.length && (
+              <div className="border border-dashed border-white/10 px-6 py-16 text-center">
+                <p className="text-sm text-white/30">
+                  No groups have been created for this course yet.
+                </p>
+              </div>
+            )}
           </section>
         </div>
 
